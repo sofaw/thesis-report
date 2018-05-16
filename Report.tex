@@ -2,7 +2,7 @@
 \addbibresource{references.bib}
 \author{Sophie Wood}
 \title{Model-driven software migration between microprocessors}
-\date{Version 0.1, 2018-May-11}
+\date{Version 0.1, 2018-May-16}
 \supervisor{Simos Gerasimou}
 \SWE
 % TODO update wordcount
@@ -24,13 +24,6 @@
 
 \chapter{Introduction}
 \section{Background and Motivation}
-% Introduction to the problem of software obsolescence
-% Problems caused by software obsolescence
-% Brief discussion of existing approaches and their shortcomings i.e. manual approach takes time/is costly
-% Introduction to MDE
-% Discussion of applicability of MDE to software obsolescence
-% Introduction to specific microprocessor migration problem
-
 Bartels et al. define obsolescence as ``materials, parts, devices, software, services and processes that become non-procurable from their original manufacturer or supplier'' \parencite{bartels2012strategies}. Both software and hardware can be subject to obsolescence problems. 
 
 Issues with hardware obsolescence have been driven by the growth of the electronics industry. This has reduced the life cycle of electronic parts as competitors release products with better functionality and features. Existing products are no longer commercially viable and therefore go out of production \parencite{bartels2012strategies}. This is a particular issue in the defence/aerospace sectors as the typical life cycle of a system is 20-30 years or longer \parencite{rojo2010obsolescence}. As such, parts will become unavailable before the system is completed. Singh et al. found that these systems ``often encounter obsolescence problems before they are fielded and always during their support life'' \parencite{singh2006obsolescence}.
@@ -39,7 +32,7 @@ Obsolescence is also a concern in the software industry. Businesses must continu
 \begin{quote}
 ``The only big companies that succeed will be those that obsolete their own products before someone else does.'' \parencite{bartels2012strategies}
 \end{quote}
-There are three main types of software obsolescence \parencite{sandborn2007obsolescence}:
+There are three main causes of software obsolescence \parencite{sandborn2007obsolescence}:
 \begin{description}
 \item[(1) Logistical:] digital media obsolescence, formatting, or degradation limits or terminates access to software
 \item[(2) Functional:] hardware, requirements, or other software changes to the system obsolete the functionality of the software
@@ -47,16 +40,14 @@ There are three main types of software obsolescence \parencite{sandborn2007obsol
 \end{description}
 A particular issue is that hardware obsolescence can drive software obsolescence and vice versa. Software obsolescence can also be caused by lack of skills. For example, there may be a limited number of people that are competent in the language the system is written in. If these people leave the company, the system can no longer be maintained \parencite{rajagopal2014software}. Again avionics/military and other ``safety-critical'' systems particularly struggle with software obsolescence issues as even small changes may have to go through extensive and costly qualification/certification processes \parencite{singh2006obsolescence}.
 
-Obsolescence problems can be costly, particularly in the case of systems with a long life cycle. The US Navy estimates that obsolescence problems can cost up to \$750 million annually \parencite{adams2005getting}. Sandborn and Myers also found that sustainment costs (which include costs related to obsolescence) dominate the system costs in the case of development of an F-16 military aircraft \parencite{sandborn2008designing}. 
-
-% TODO
+Obsolescence mitigation can be costly, particularly in the case of systems with a long life cycle. The US Navy estimates that obsolescence problems can cost up to \$750 million annually \parencite{adams2005getting}. Sandborn and Myers also found that sustainment costs (which include costs related to obsolescence) dominate the system costs in the case of development of an F-16 military aircraft \parencite{sandborn2008designing}. 
  
- However, strategies for obsolescence management have generally focused on hardware obsolescence problems. This is despite software obsolescence costs often equalling or exceeding that of hardware \parencite{sandborn2007obsolescence}. 
+Strategies for obsolescence mitigation/management have generally focused on hardware obsolescence problems. This is despite software obsolescence costs often equalling or exceeding that of hardware. Proactive measures to mitigate obsolescence (e.g. improving code portability or using open-source software) often require either a large amount of resources or resources that are unavailable. Industries such as aerospace are generally reliant on COTS components and cannot control the supply chain. Therefore, they cannot avoid obsolescence issues. Reactive strategies for tackling obsolescence include software license downgrades (i.e. customers can adapt legacy versions of the software by purchasing a licence for the latest version and applying that to the older product); purchasing the source code and third party support (i.e. a third party will take over maintenance of the legacy software). If these strategies are insufficient, the legacy system may have to be redeveloped or rehosted \parencite{sandborn2007obsolescence}. However, many such software modernisation projects are abandoned or not completed within the planned timescale/budget \parencite{kowalczyk2009model}. 
 
-The Defence Science and Technology Laboratory (DSTL) have identified as a problem of particular interest ``the migration of an entire software system from a legacy hardware platform to a modern more powerful platform'' \parencite{gerasimou2017technical}. 
+Model-driven software modernisation (MDSM) is a set of strategies that use model-driven engineering (MDE) to address these issues with software modernisation projects by (partially) automating the process of modernisation. These approaches have already proved feasible by Kowalczyk and Kwieci\'nska who demonstrated the modernisation of a project written in Java 1.4 and the Hibernate 2.x framework, which uses XML mappings, into Java 1.5 and Hibernate 3.x which uses Java Persistence API (JPA) annotations \parencite{kowalczyk2009model}. Additionally, a model-driven approach is employed in industry by the Sodifrance company who have migrated a large-scale banking system (at a size of around one million lines of code) to J2EE \parencite{fleurey2007model}.
 
-This report will address how this problem can be tackled using a model-driven engineering (MDE) approach.
-
+The Defence Science and Technology Laboratory (DSTL) at the Ministry of Defence (MoD) have identified several instances of software obsolescence they would like to tackle. A problem of particular interest is ``the migration of an entire software system from a legacy hardware platform to a modern more powerful platform'' \parencite{gerasimou2017technical}. This report will explore how MDSM processes can be used to partially automate the migration of code between microprocessors. A case study implementing the migration of code between a Parallax Propeller Activity Board and an Arduino Uno will be used to demonstrate the approach developed.
+ 
 \section{Project Goals}
 TODO
 \section{Project Scope}
