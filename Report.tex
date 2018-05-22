@@ -60,11 +60,8 @@ TODO
 \chapter{Literature Review}
 TODO: write introduction to the literature review chapter
 \section{Model Driven Engineering}
-% Introduction to MDE - why it was developed/what it's useful for
-% Discussion of models, metamodels, DSLs
-% Discussion on transformations - M2M, M2T, T2M 
-
 Model Driven Engineering (MDE) was developed in order to address complexity within the problem space of computing. In the past, approaches for enabling programmers to develop code more easily have focused on simplifying the solution space. This was achieved by providing abstractions such as higher-level programming languages or providing operating systems to manage the difficulty of programming hardware directly. However, these solutions are unable to express domain concepts effectively, unlike MDE techniques \parencite{schmidt2006model}. Furthermore, it has been found that MDE can also be utilised in automating the software development process \parencite{bezivin2004search}.
+\newline
 The rest of this section introduces the terminology and main components of MDE.
 
 \subsection{Domain-Specific Modelling Languages (DSMLs)}
@@ -86,7 +83,23 @@ There are three main categories of model transformation:
 \end{description}
 
 \subsection{The Epsilon Framework}
-% TODO: Discussion of Epsilon framework and why I chose this for the project
+Epsilon is a family of programming languages for model management tasks. It provides (among others) the following languages of interest \parencite{kolovos2010epsilon}:
+\begin{description}
+\item[Epsilon Object Language (EOL):] EOL is the common basis for the languages provided by Epsilon. It can be used for querying and modifying models.
+\item[Epsilon Validation Language (EVL):] EVL is used for model validation.
+\item[Epsilon Transformation Language (ETL):] ETL is used for M2M transformations.
+\item[Epsilon Generation Language (EGL):] EGL is used for M2T transformations.
+\end{description}
+Epsilon also enables the use of ANT tasks to create workflows of different tasks (e.g. a validation followed by a
+transformation followed by code generation) \parencite{kolovos2010epsilon}.
+\newline
+Epsilon has been chosen as the framework for this project over others for the following reasons:
+\begin{itemize}
+\item It is well documented with many tutorials as well as ``The Epsilon Book'' being freely available. Additionally, there is an active forum for any questions not answered by these sources \parencite{epsilonsite}.
+\item It is well integrated with Eclipse (for example, syntax/error highlighting is provided in the editor and there are graphical tools for running/debugging programs) and has been an official project since 2006 \parencite{epsilonsite}..
+\item Epsilon provides a connectivity layer (EMC). This layer allows EOL programs to access models of different modelling technologies including Eclipse Modelling Framework (EMF) models and XML documents \parencite{epsilonsite}..
+\item I am already familiar with how to use the framework.
+\end{itemize}
 
 \section{Microprocessor Background}
 \section{Existing Work}
