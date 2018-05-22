@@ -65,25 +65,25 @@ TODO: write introduction to the literature review chapter
 % Discussion on transformations - M2M, M2T, T2M 
 
 Model Driven Engineering (MDE) was developed in order to address complexity within the problem space of computing. In the past, approaches for enabling programmers to develop code more easily have focused on simplifying the solution space. This was achieved by providing abstractions such as higher-level programming languages or providing operating systems to manage the difficulty of programming hardware directly. However, these solutions are unable to express domain concepts effectively, unlike MDE techniques \parencite{schmidt2006model}. Furthermore, it has been found that MDE can also be utilised in automating the software development process \parencite{bezivin2004search}.
-The main components of MDE are Domain-Specific Modelling Languages (DSMLs) and model transformations. These will be discussed in the following sections.
+The rest of this section introduces the terminology and main components of MDE.
 
 \subsection{Domain-Specific Modelling Languages (DSMLs)}
 Meta-meta-modelling mechanisms such as the Object Management Group's (OMG) Meta Object Facility (MOF) can be used to create modelling languages for a given problem domain \parencite{mussbacher2014relevance}. The key components of the OMG's approach to DSMLs are \parencite{bezivin2001towards}:
 \begin{description}
-\item[(1) Models:] A model is a simplification of a system built with an intended goal in mind. Models should be easier to use than the original system. This is achieved by abstracting out details of the system that are unnecessary for the target model's intended purpose.
-\item[(2) Meta-models:] A meta-model is the explicit specification of an abstraction (i.e. model). 
-\item[(3) Meta-meta-models:]  A meta-meta-model is used to define meta-models. In particular, the OMG define the MOF (Meta Object Facility) which is a self-defined meta-meta-model.
+\item[Models:] A model is a simplification of a system built with an intended goal in mind. Models should be easier to use than the original system. This is achieved by abstracting out details of the system that are unnecessary for the target model's intended purpose.
+\item[Meta-models:] A meta-model is the explicit specification of an abstraction (i.e. model). 
+\item[Meta-meta-models:]  A meta-meta-model is used to define meta-models. In particular, the OMG define the MOF (Meta Object Facility) which is a self-defined meta-meta-model.
 \end{description}
 
 % TODO: insert figure of MDA layers?
 
 \subsection{Model Transformations}
-
-% TODO: remove unused citations
-\parencite{bezivin2001towards}
-\parencite{bezivin2004search}
-\parencite{czarnecki2003classification}
-\parencite{mussbacher2014relevance}
+There are three main categories of model transformation:
+\begin{description}
+\item[Model-to-model (M2M):] M2M transformations are used to translate source models to target models. The source and target models can be instances of the same or different meta-models \parencite{czarnecki2003classification}.
+\item[Model-to-Text (M2T):] These can be considered a special case of M2M transformations. It is often the case that M2T transformations are used for code generation. The most common approach to M2T transformation is a template-based approach. A template contains mixtures of static text and dynamic sections that can be used to access information from the source model \parencite{czarnecki2003classification}.
+\item[Text-to-Model (T2M):]  T2M transformations can be used to transform code to a model (conforming to a language meta-model). Model discoverer tools such as MoDisco \parencite{bruneliere2014modisco} are the easiest way to perform T2M transformations on code \parencite{kowalczyk2009model}.
+\end{description}
 
 \subsection{The Epsilon Framework}
 % TODO: Discussion of Epsilon framework and why I chose this for the project
