@@ -10,3 +10,5 @@
 *.blg
 *.fdb_latexmk
 *.fls
+*.lof
+*.lot

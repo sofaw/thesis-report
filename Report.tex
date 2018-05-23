@@ -1,8 +1,10 @@
 \documentclass{UoYCSproject}
 \usepackage[backend=biber]{biblatex}
+\usepackage{graphicx}
+\usepackage{float}
 \addbibresource{references.bib}
 \author{Sophie Wood}
-\title{Model-driven software migration between microprocessors}
+\title{Model-driven software migration between microcontrollers}
 \date{Version 0.1, 2018-May-16}
 \supervisor{Simos Gerasimou}
 \SWE
@@ -22,6 +24,8 @@
 
 \begin{document}
 \maketitle
+\listoffigures
+\listoftables
 
 \chapter{Introduction}
 \section{Background and Motivation}
@@ -60,6 +64,7 @@ TODO
 \chapter{Literature Review}
 TODO: write introduction to the literature review chapter
 \section{Model Driven Engineering}
+%TODO: this should be edited to have a stronger relation to the project
 Model Driven Engineering (MDE) was developed in order to address complexity within the problem space of computing. In the past, approaches for enabling programmers to develop code more easily have focused on simplifying the solution space. This was achieved by providing abstractions such as higher-level programming languages or providing operating systems to manage the difficulty of programming hardware directly. However, these solutions are unable to express domain concepts effectively, unlike MDE techniques \parencite{schmidt2006model}. Furthermore, it has been found that MDE can also be utilised in automating the software development process \parencite{bezivin2004search}.
 \newline
 The rest of this section introduces the terminology and main components of MDE.
@@ -101,7 +106,44 @@ Epsilon has been chosen as the framework for this project over others for the fo
 \item I am already familiar with how to use the framework.
 \end{itemize}
 
-\section{Microprocessor Background}
+\section{Microcontroller Background}
+The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core microcontroller whereas the Arduino Uno only has a single core. This must be taken into account during the code migration process. The following section discusses the important features and differences between the two boards.
+
+\subsection{Parallax Propeller Activity Board}
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{graphics/propeller_board.png}
+  \caption{Features of the Parallax Propeller Activity Board \parencite{propellerspec}.}
+  \label{fig:prop_board}
+\end{figure}
+
+The key features of the Parallax Propeller Activity Board are \parencite{propellerspec}:
+\begin{itemize}
+\item Built-in 8-core Propeller P8X32A microcontroller
+\item 64KB EEPROM
+\item XBee wireless module socket
+\item 16 digital I/O pins
+\item 4 Analog-to-Digital pins
+\item 2 Digital-to-Analog pins
+\end{itemize}
+
+\subsection{Arduino Uno}
+%TODO: figure out which version I will be using
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{graphics/arduino_board.jpg}
+  \caption{Features of the Arduino Uno \parencite{arduinodiagram}.}
+  \label{fig:arduino_uno}
+\end{figure}
+
+The key features of the Arduino Uno are \parencite{arduinospec}:
+\begin{itemize}
+\item Built-in single-core ATmega328 microcontroller
+\item 32KB flash memory
+\item 2KB SRAM
+\item 1KB EEPROM
+\item 14 digital I/O pins (6 provide PWM output)
+\item 6 analog input pins
+\end{itemize}
+
 \section{Existing Work}
 \subsection{MDE Approaches}
 \subsection{Other Approaches}
