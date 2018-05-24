@@ -63,6 +63,26 @@ TODO
 
 \chapter{Literature Review}
 TODO: write introduction to the literature review chapter
+\section{Existing Work}
+% Approaches to the general problem of software obsolescence
+% Approaches to the specific microcontroller problem
+\subsection{Obsolescence}
+% Summary of all strategies
+% Discussion that most of these are not applicable to sw -> but talk about specific tools
+% Discuss other strategies/attempts
+The paper by Rojo et al. from 2010 summarises the existing literature for tackling obsolescence \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. However, they conclude that sectors such as the defence industry would benefit from managing this problem.
+\newline
+They did identify two tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) that could be useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
+\newline
+Se-Fly Fisher uses the technology curves of each part of the system to: forecast how often a system baseline should change; identify replacement resources and estimate the benefit of each system baseline change \parencite{rojo2010obsolescence}.
+Similarly, R2T2 can: forecast system obsolescence; allow for comparisons to alternative solutions; produce a life cycle obsolescence plan for the elements that require refreshment and plan when element replacements should occur \parencite{herald2009obsolescence} .
+
+% Pros and cons of these tools
+% In terms of SW obs.
+% Pro - can make sure you e.g. hire people will correct skillset
+% Pro - switch to other COTS
+% Con - does not deal well if equivalent parts are unavailable -> SW 
+
 \section{Model Driven Engineering}
 %TODO: this should be edited to have a stronger relation to the project
 Model Driven Engineering (MDE) was developed in order to address complexity within the problem space of computing. In the past, approaches for enabling programmers to develop code more easily have focused on simplifying the solution space. This was achieved by providing abstractions such as higher-level programming languages or providing operating systems to manage the difficulty of programming hardware directly. However, these solutions are unable to express domain concepts effectively, unlike MDE techniques \parencite{schmidt2006model}. Furthermore, it has been found that MDE can also be utilised in automating the software development process \parencite{bezivin2004search}.
@@ -144,9 +164,7 @@ The key features of the Arduino Uno are \parencite{arduinospec}:
 \item 6 analog input pins
 \end{itemize}
 
-\section{Existing Work}
-\subsection{MDE Approaches}
-\subsection{Other Approaches}
+
 \section{Tools}
 
 \chapter{Methodology}
