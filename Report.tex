@@ -62,28 +62,9 @@ TODO
 TODO
 
 \chapter{Literature Review}
-TODO: write introduction to the literature review chapter
+%TODO: write introduction to the literature review chapter
 \section{Existing Work}
-% Approaches to the general problem of software obsolescence
-% Approaches to the specific microcontroller problem
-\subsection{Software Obsolescence}
-% Summary of all strategies
-% Discussion that most of these are not applicable to sw -> but talk about specific tools
-% Discuss other strategies/attempts
-
-% Gen. sw obs.
-% Past approaches
-% Discussion of lit. review
-% Sandborn et al. software license downgrade/source code purchase \parencite{sandborn2007obsolescence}
-% Recent MDE approaches
-% Kowalczyk MDSM \parencite{kowalczyk2009model}
-% Sodifrance \parencite{fleurey2007model}
-% Microprocessor specific
-% atmel 8-bit to 32-bit \parencite{wilbrink2004facilitating}
-% York strategy \parencite{gerasimou2017technical}
-% Introduction to my approach
-% Including potential pros/cons
-
+\subsection{Approaches to Software Obsolescence}
 Rojo et al. summarise the existing literature for tackling obsolescence up to 2010 in their paper ``Obsolescence management for long-life contracts: state of the art and future trends'' \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. Yet, they propose that sectors such as the defence industry would benefit from managing this problem.
 
 They did identify two tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) that could be useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
@@ -103,9 +84,6 @@ Similarly, Sandborn et al. identified very few approaches towards managing softw
 When possible, these approaches could reduce costs as the software does not have to be maintained in house or redeveloped. However, sometimes these methods may not be possible. Additionally, given that the system owners are so dependent on the legacy code, it puts them in a poor position for negotiating the prices for these contracts and so this approach could become costly.
 
 \subsection{MDE Approaches to Software Obsolescence}
-% MDE - how these approaches are effective and may be applied to the microprocessor problem
-% Kowalczyk MDSM \parencite{kowalczyk2009model}
-% Sodifrance \parencite{fleurey2007model}
 More recently, MDE approaches have been used to tackle software obsolescence problems where legacy code must be redeveloped. MDE allows some of the stages in migration to be automated, consequently reducing the timescale and costs involved.
 
 The company Sodifrance has successfully been using MDE for development and migration projects for over ten years \parencite{fleurey2007model}. The general MDE approach to migration used by Sodifrance is shown in Figure \ref{fig:sodifrance_process}. The approach is separated into four stages as follow:
@@ -126,7 +104,6 @@ The company Sodifrance has successfully been using MDE for development and migra
 The first two steps of the process can usually be fully automated. However, the remaining stages need some manual effort. Tasks that could not be completed automatically are indicated in the generated code (e.g. by TODO directives in Java applications) and summarised into a task list in order to allow the manual process to be completed more efficiently.
 
 Sodifrance demonstrated the effectiveness of their approach using a case study of migrating a large-scale banking system from Mainframe to J2EE.
-% TODO read related works to the sodifrance paper
 
 Kowalczyk and Kwieci\'nska have also explored the use of MDE in software migration \parencite{kowalczyk2009model}. They identified two main approaches: the ``Reverse MDA approach'' (RMA) and the ``Direct Transformation Approach'' (DTA).
 
@@ -152,19 +129,28 @@ One of the main considerations that must be made when choosing an MDE approach i
   \label{fig:costvsize}
 \end{figure}
 
-%TODO discuss testing in relation to MDE
-
-
 \subsection{Migration Between Microcontrollers}
-MDE processes have yet to be applied to software migration between microcontrollers. 
+As mentioned previously, a particular problem of interest to the MoD is ``the migration of an entire software system from a legacy hardware platform to a modern more powerful platform'' \parencite{gerasimou2017technical}.
 
-Atmel dev
-% Microprocessor specific
-% atmel 8-bit to 32-bit \parencite{wilbrink2004facilitating}
-% York strategy \parencite{gerasimou2017technical}
-My project aims to explore the feasibility of applying the MDE approach similar to that demonstrated in \parencite{fleurey2007model} and \parencite{kowalczyk2009model}
-% Introduction to my approach
-% Including potential pros/cons
+Atmel addressed the issue of migrating code between microcontrollers by reducing the learning curve for developers moving from development on 8-bit to 32-bit platforms. They aimed to achieve this by providing powerful debug facilities and development tools similar to established 8-bit development platforms \parencite{wilbrink2004facilitating}.
+
+Although this strategy should reduce the migration effort, the code will still be have to be migrated manually which is error-prone and difficult.
+
+Another approach for migrating code between microprocessors combines code analysis, code-based transformations and verification/validation techniques \parencite{gerasimou2017technical}. The procedure follows the following steps:
+\begin{description}
+\item[(1) Software system analysis (automated):] The source code and obsolete libraries are parsed to obtain abstract syntax trees (ASTs). The AST can be examined to indicate the elements using the obsolete library and help establish the system's dependency level.
+\item[(2) Discovery of similar libraries (non-automated):] The development team identifies candidate libraries for replacement of the obsolete library.
+\item[(3) Compatibility analysis of the discovered libraries (non-automated):] Candidate libraries are rejected if they don't conform to technical or semantic requirements.
+\item[(4) Data visualisation (automated):] Used to analyse the software system and its coupling with the obsolete library.
+\item[(5) Execute generation transformations (automated):] Firstly, an abstraction layer is generated that has the same usage behaviour as the obsolete library. Next the obsolete library usages are replaced with this abstract layer.
+\item[(6) Mappings inference (non-automated):] A developer creates a list of mapping rules by inspection of the obsolete and replacement libraries.
+\item[(7) Code population (non-automated):] A developer uses the mapping rules generated in stage 6 to populate the abstraction layer generated in stage 5.
+\end{description}
+This method was demonstrated to succeed in partially automating the migration of software between an Arduino and Raspberry Pi.
+
+There is still some manual effort involved in this approach, but the overall time should be reduced. Another benefit is that the code analysis stages allow for potential risks to be detected early on. The main area for improvement in this method is automating the migration between libaries.
+
+My project aims to explore the feasibility of applying an MDE approach similar to that demonstrated in \parencite{fleurey2007model} and \parencite{kowalczyk2009model} to migrating code between microcontrollers. In doing so I aim to be able to (partially) automate the migration process, consequently reducing the time taken for migration.
 
 \section{Model Driven Engineering}
 %TODO: this should be edited to have a stronger relation to the project
@@ -248,9 +234,6 @@ The key features of the Arduino Uno are \parencite{arduinospec}:
 \item 6 analog input pins
 \end{itemize}
 
-
-\section{Tools}
-
 \chapter{Methodology}
 %TODO
 
@@ -265,6 +248,7 @@ The key features of the Arduino Uno are \parencite{arduinospec}:
 
 \chapter{Conclusion}
 %TODO
+%TODO discuss effort of testing
 
 \printbibliography
 \end{document}
