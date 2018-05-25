@@ -70,17 +70,38 @@ TODO: write introduction to the literature review chapter
 % Summary of all strategies
 % Discussion that most of these are not applicable to sw -> but talk about specific tools
 % Discuss other strategies/attempts
-The paper by Rojo et al. from 2010 summarises the existing literature for tackling obsolescence \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. However, they conclude that sectors such as the defence industry would benefit from managing this problem.
+
+% Gen. sw obs.
+% Past approaches
+% Discussion of lit. review
+% Sandborn et al. software license downgrade/source code purchase \parencite{sandborn2007obsolescence}
+% Recent MDE approaches
+% Kowalczyk MDSM \parencite{kowalczyk2009model}
+% Sodifrance \parencite{fleurey2007model}
+% Microprocessor specific
+% atmel 8-bit to 32-bit \parencite{wilbrink2004facilitating}
+% York strategy \parencite{gerasimou2017technical}
+% Introduction to my approach
+% Including potential pros/cons
+
+Rojo et al. summarise the existing literature for tackling obsolescence up to 2010 in their paper ``Obsolescence management for long-life contracts: state of the art and future trends'' \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. Yet, they propose that sectors such as the defence industry would benefit from managing this problem.
 \newline
 They did identify two tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) that could be useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
 \newline
 Se-Fly Fisher uses the technology curves of each part of the system to: forecast how often a system baseline should change; identify replacement resources and estimate the benefit of each system baseline change \parencite{rojo2010obsolescence}.
+\newline
 Similarly, R2T2 can: forecast system obsolescence; allow for comparisons to alternative solutions; produce a life cycle obsolescence plan for the elements that require refreshment and plan when element replacements should occur \parencite{herald2009obsolescence}.
+\newline
 These forecasting tools may enable organisations to plan ahead and handle cases where equivalent parts/software are available. However, they cannot assist in the actual redesign or redevelopment process which can be time consuming and costly.
-
-% Sandborn et al. software license downgrade/source code purchase \parencite{sandborn2007obsolescence}
-
-
+\newline
+Similarly, Sandborn et al. identified very few approaches towards managing software obsolescence. The main methods they identified for mitigating software obsolescence were \parencite{sandborn2007obsolescence}:
+\begin{description}
+\item[(1) Software License Downgrade:] users can purchase licenses for the current product and apply them to older versions.
+\item[(2) Source Code Purchase:] customers purchase the source code for the product.
+\item[(3) Third Party Support:] a third party is contracted to maintain support for the software.
+\end{description}
+When possible, these approaches could reduce costs as the software does not have to be maintained in house or redeveloped. However, sometimes these methods may not be possible. Additionally, given that the system owners are so dependent on the legacy code, it puts them in a poor position for negotiating the prices for these contracts and so this approach could become costly.
+\newline
 % MDE - how these approaches are effective and may be applied to the microprocessor problem
 % Kowalczyk MDSM \parencite{kowalczyk2009model}
 % Sodifrance \parencite{fleurey2007model}
@@ -89,6 +110,8 @@ These forecasting tools may enable organisations to plan ahead and handle cases 
 % atmel 8-bit to 32-bit \parencite{wilbrink2004facilitating}
 % York strategy \parencite{gerasimou2017technical}
 
+% Introduction to my approach
+% Including potential pros/cons
 
 \section{Model Driven Engineering}
 %TODO: this should be edited to have a stronger relation to the project
@@ -134,7 +157,7 @@ Epsilon has been chosen as the framework for this project over others for the fo
 \end{itemize}
 
 \section{Microcontroller Background}
-The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core microcontroller whereas the Arduino Uno only has a single core. This must be taken into account during the code migration process. The following section discusses the important features and differences between the two boards.
+The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core processor whereas the Arduino Uno only has a single core. In this case, the parallelised elements of the source code must be adapted to run on a single core. The following section discusses the important features and differences between the two boards.
 
 \subsection{Parallax Propeller Activity Board}
 \begin{figure}[H]
