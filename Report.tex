@@ -66,7 +66,7 @@ TODO: write introduction to the literature review chapter
 \section{Existing Work}
 % Approaches to the general problem of software obsolescence
 % Approaches to the specific microcontroller problem
-\subsection{Obsolescence}
+\subsection{Software Obsolescence}
 % Summary of all strategies
 % Discussion that most of these are not applicable to sw -> but talk about specific tools
 % Discuss other strategies/attempts
@@ -85,15 +85,15 @@ TODO: write introduction to the literature review chapter
 % Including potential pros/cons
 
 Rojo et al. summarise the existing literature for tackling obsolescence up to 2010 in their paper ``Obsolescence management for long-life contracts: state of the art and future trends'' \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. Yet, they propose that sectors such as the defence industry would benefit from managing this problem.
-\newline
+
 They did identify two tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) that could be useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
-\newline
+
 Se-Fly Fisher uses the technology curves of each part of the system to: forecast how often a system baseline should change; identify replacement resources and estimate the benefit of each system baseline change \parencite{rojo2010obsolescence}.
-\newline
+
 Similarly, R2T2 can: forecast system obsolescence; allow for comparisons to alternative solutions; produce a life cycle obsolescence plan for the elements that require refreshment and plan when element replacements should occur \parencite{herald2009obsolescence}.
-\newline
+
 These forecasting tools may enable organisations to plan ahead and handle cases where equivalent parts/software are available. However, they cannot assist in the actual redesign or redevelopment process which can be time consuming and costly.
-\newline
+
 Similarly, Sandborn et al. identified very few approaches towards managing software obsolescence. The main methods they identified for mitigating software obsolescence were \parencite{sandborn2007obsolescence}:
 \begin{description}
 \item[(1) Software License Downgrade:] users can purchase licenses for the current product and apply them to older versions.
@@ -101,15 +101,68 @@ Similarly, Sandborn et al. identified very few approaches towards managing softw
 \item[(3) Third Party Support:] a third party is contracted to maintain support for the software.
 \end{description}
 When possible, these approaches could reduce costs as the software does not have to be maintained in house or redeveloped. However, sometimes these methods may not be possible. Additionally, given that the system owners are so dependent on the legacy code, it puts them in a poor position for negotiating the prices for these contracts and so this approach could become costly.
-\newline
+
+\subsection{MDE Approaches to Software Obsolescence}
 % MDE - how these approaches are effective and may be applied to the microprocessor problem
 % Kowalczyk MDSM \parencite{kowalczyk2009model}
 % Sodifrance \parencite{fleurey2007model}
+More recently, MDE approaches have been used to tackle software obsolescence problems where legacy code must be redeveloped. MDE allows some of the stages in migration to be automated, consequently reducing the timescale and costs involved.
 
+The company Sodifrance has successfully been using MDE for development and migration projects for over ten years \parencite{fleurey2007model}. The general MDE approach to migration used by Sodifrance is shown in Figure \ref{fig:sodifrance_process}. The approach is separated into four stages as follow:
+
+\begin{enumerate}
+\item Parsing the code of the legacy application in order to create a model of the legacy system. In Figure \ref{fig:sodifrance_process}, \textit{L} indicates the metamodel for the implementation language of the legacy code.
+\item This model is then transformed to a Platform Independent Model (PIM) conforming to an ANT metamodel. This model represents a high-level view of the legacy code. This process is dependent on knowledge of the libraries and coding conventions used by the legacy platform.
+\item Next the PIM has a model transformation applied to produce a Platform Specific Model (PSM) conforming to a UML metamodel. The high-level views from the PIM are adapted to fit the target platform.
+\item Finally, code is generated from the PSM by using template-based text generation tools.
+\end{enumerate}
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/sodifrance_mde.png}
+  \caption{The general model-driven migration process used by Sodifrance \parencite{fleurey2007model}.}
+  \label{fig:sodifrance_process}
+\end{figure}
+
+The first two steps of the process can usually be fully automated. However, the remaining stages need some manual effort. Tasks that could not be completed automatically are indicated in the generated code (e.g. by TODO directives in Java applications) and summarised into a task list in order to allow the manual process to be completed more efficiently.
+
+Sodifrance demonstrated the effectiveness of their approach using a case study of migrating a large-scale banking system from Mainframe to J2EE.
+% TODO read related works to the sodifrance paper
+
+Kowalczyk and Kwieci\'nska have also explored the use of MDE in software migration \parencite{kowalczyk2009model}. They identified two main approaches: the ``Reverse MDA approach'' (RMA) and the ``Direct Transformation Approach'' (DTA).
+
+The RMA approach follows the same stages as that used by Sodifrance. The DTA approach shown in Figure \ref{fig:dta} reduces the number of stages involved in the transformation process by directly transforming between platform specific models. 
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/dta.png}
+  \caption{The stages involved in the ``Direct Transformation Approach''.}
+  \label{fig:dta}
+\end{figure}
+
+The feasibility of both approaches was demonstrated by a case study migrating from Java 1.4 and the Hibernate 2.x framework to Java 1.5 and Hibernate 3.x. Based on qualitative analysis of the two approaches, they recommend to use an approach similar to DTA as it is often not the case that a transformation from the legacy code model to the PIM will exist. It is especially suited to cases where the code model and application model use the same metamodel. 
+
+MDE approaches to software migration have many benefits. The primary reason is the ability to automate some of the stages in the migration process, consequently reducing the cost and time scale of projects. Secondly, parts of the process (e.g. model discoverers or transformations) can be reused between different migration projects which will again cut the cost of migration.
+
+There are however, drawbacks to the MDE approach. There is a high cost of entry to start using MDE methods --- the initial development of processes and tools can be time consuming and expensive if open-source tools are not available. Secondly, a particular issue in commercial projects is that no code will be available until the initial analysis and tool development stage of the process is completed. In the case of the Sodifrance case study, code was not delivered until 10 months after the project had begun \parencite{fleurey2007model}. This can make customers nervous and reluctant to try this approach. On the other hand, once the initial stage is completed, the delivery rate of the code can be much faster than for a standard re-development approach.
+
+One of the main considerations that must be made when choosing an MDE approach is the size of the project. If the project is small, it may be more expensive to use this method as the initial stages may take longer than manually migrating the code. This is demonstrated in Figure \ref{fig:costvsize}.
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/costvsize.png}
+  \caption{Project migration cost as a function of its size \parencite{fleurey2007model}.}
+  \label{fig:costvsize}
+\end{figure}
+
+%TODO discuss testing in relation to MDE
+
+
+\subsection{Migration Between Microcontrollers}
+MDE processes have yet to be applied to software migration between microcontrollers. 
+
+Atmel dev
 % Microprocessor specific
 % atmel 8-bit to 32-bit \parencite{wilbrink2004facilitating}
 % York strategy \parencite{gerasimou2017technical}
-
+My project aims to explore the feasibility of applying the MDE approach similar to that demonstrated in \parencite{fleurey2007model} and \parencite{kowalczyk2009model}
 % Introduction to my approach
 % Including potential pros/cons
 
@@ -138,6 +191,7 @@ There are three main categories of model transformation:
 \end{description}
 
 \subsection{The Epsilon Framework}
+% TODO may be worth comparing to M2T Xpand
 Epsilon is a family of programming languages for model management tasks. It provides (among others) the following languages of interest \parencite{kolovos2010epsilon}:
 \begin{description}
 \item[Epsilon Object Language (EOL):] EOL is the common basis for the languages provided by Epsilon. It can be used for querying and modifying models.
@@ -157,10 +211,10 @@ Epsilon has been chosen as the framework for this project over others for the fo
 \end{itemize}
 
 \section{Microcontroller Background}
-The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core processor whereas the Arduino Uno only has a single core. In this case, the parallelised elements of the source code must be adapted to run on a single core. The following section discusses the important features and differences between the two boards.
+The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core processor whereas the Arduino Uno only has a single core. In this case, the parallelised elements of the source code must be adapted to run on a single core. The following section highlights the important features and differences between the two boards.
 
 \subsection{Parallax Propeller Activity Board}
-\begin{figure}[H]
+\begin{figure}[h!]
   \includegraphics[width=\linewidth]{graphics/propeller_board.png}
   \caption{Features of the Parallax Propeller Activity Board \parencite{propellerspec}.}
   \label{fig:prop_board}
@@ -178,7 +232,7 @@ The key features of the Parallax Propeller Activity Board are \parencite{propell
 
 \subsection{Arduino Uno}
 %TODO: figure out which version I will be using
-\begin{figure}[H]
+\begin{figure}[h!]
   \includegraphics[width=\linewidth]{graphics/arduino_board.jpg}
   \caption{Features of the Arduino Uno \parencite{arduinodiagram}.}
   \label{fig:arduino_uno}
