@@ -62,9 +62,12 @@ TODO
 TODO
 
 \chapter{Literature Review}
-%TODO: write introduction to the literature review chapter
+The following chapter introduces the existing work on software obsolescence and the technical background required to understand this project. It begins with an overview of the existing approaches for software obsolescence mitigation in Section \ref{so_approaches} and in particular, MDE-based strategies in Section \ref{mde_approaches}. The specific problem of migration between microcontrollers and the existing methods for facilitating this are discussed in Section \ref{mc_migration} as well as how the MDSM-based method explored in this project is related. 
+
+Sections \ref{mde_bg} and \ref{mc_bg} contain the technical background of the project including a brief overview of MDE and the chosen framework for this project as well as a description of the microcontrollers used for the case study.
+
 \section{Existing Work}
-\subsection{Approaches to Software Obsolescence}
+\subsection{Approaches to Software Obsolescence} \label{so_approaches}
 Rojo et al. summarise the existing literature for tackling obsolescence up to 2010 in their paper ``Obsolescence management for long-life contracts: state of the art and future trends'' \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. Yet, they propose that sectors such as the defence industry would benefit from managing this problem.
 
 They did identify two tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) that could be useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
@@ -89,7 +92,7 @@ More recently, MDE approaches have been used to tackle software obsolescence pro
 The company Sodifrance has successfully been using MDE for development and migration projects for over ten years \parencite{fleurey2007model}. The general MDE approach to migration used by Sodifrance is shown in Figure \ref{fig:sodifrance_process}. The approach is separated into four stages as follow:
 
 \begin{enumerate}
-\item Parsing the code of the legacy application in order to create a model of the legacy system. In Figure \ref{fig:sodifrance_process}, \textit{L} indicates the metamodel for the implementation language of the legacy code.
+\item Firstly, the code of the legacy application is parsed in order to create a model of the legacy system. In Figure \ref{fig:sodifrance_process}, \textit{L} indicates the metamodel for the implementation language of the legacy code.
 \item This model is then transformed to a Platform Independent Model (PIM) conforming to an ANT metamodel. This model represents a high-level view of the legacy code. This process is dependent on knowledge of the libraries and coding conventions used by the legacy platform.
 \item Next the PIM has a model transformation applied to produce a Platform Specific Model (PSM) conforming to a UML metamodel. The high-level views from the PIM are adapted to fit the target platform.
 \item Finally, code is generated from the PSM by using template-based text generation tools.
@@ -129,12 +132,12 @@ One of the main considerations that must be made when choosing an MDE approach i
   \label{fig:costvsize}
 \end{figure}
 
-\subsection{Migration Between Microcontrollers}
+\subsection{Migration Between Microcontrollers} \label{mc_migration}
 As mentioned previously, a particular problem of interest to the MoD is ``the migration of an entire software system from a legacy hardware platform to a modern more powerful platform'' \parencite{gerasimou2017technical}.
 
 Atmel addressed the issue of migrating code between microcontrollers by reducing the learning curve for developers moving from development on 8-bit to 32-bit platforms. They aimed to achieve this by providing powerful debug facilities and development tools similar to established 8-bit development platforms \parencite{wilbrink2004facilitating}.
 
-Although this strategy should reduce the migration effort, the code will still be have to be migrated manually which is error-prone and difficult.
+Although this strategy should reduce the migration effort, the code will still be have to be migrated manually which is error-prone and difficult. Additionally, the development of new tools adds extra overhead to the project, although these tools are reusable between projects.
 
 Another approach for migrating code between microprocessors combines code analysis, code-based transformations and verification/validation techniques \parencite{gerasimou2017technical}. The procedure follows the following steps:
 \begin{description}
@@ -148,15 +151,14 @@ Another approach for migrating code between microprocessors combines code analys
 \end{description}
 This method was demonstrated to succeed in partially automating the migration of software between an Arduino and Raspberry Pi.
 
-There is still some manual effort involved in this approach, but the overall time should be reduced. Another benefit is that the code analysis stages allow for potential risks to be detected early on. The main area for improvement in this method is automating the migration between libaries.
+By automating some of the migration stages, the overall time and cost of software modernisation should be reduced. Another benefit is that the code analysis stages allow for potential risks to be detected early on. However, there is still a lot of manual effort required for migrating between libraries and in particular, generating mapping rules requires a developer with a strong understanding of both the new and obsolete libraries. Another issue is that adding the abstraction layer could lead to a large increase in the size of the code if the obsolete libraries are used frequently. This could make the code more difficult to maintain.
 
-My project aims to explore the feasibility of applying an MDE approach similar to that demonstrated in \parencite{fleurey2007model} and \parencite{kowalczyk2009model} to migrating code between microcontrollers. In doing so I aim to be able to (partially) automate the migration process, consequently reducing the time taken for migration.
+My project aims to explore an alternative approach for migrating code between microcontrollers by applying an MDE approach similar to that discussed in Section \ref{mde_approaches}. In doing so I aim to be able to (partially) automate the migration process, consequently reducing the time taken for migration whilst also avoiding issues associated with other methods such as code blow-up in \parencite{gerasimou2017technical}.
 
 \section{Model Driven Engineering} \label{mde_bg}
-%TODO: this should be edited to have a stronger relation to the project
 Model Driven Engineering (MDE) was developed in order to address complexity within the problem space of computing. In the past, approaches for enabling programmers to develop code more easily have focused on simplifying the solution space. This was achieved by providing abstractions such as higher-level programming languages or providing operating systems to manage the difficulty of programming hardware directly. However, these solutions are unable to express domain concepts effectively, unlike MDE techniques \parencite{schmidt2006model}. Furthermore, it has been found that MDE can also be utilised in automating the software development process \parencite{bezivin2004search}.
 \newline
-The rest of this section introduces the terminology and main components of MDE.
+The rest of this section introduces the terminology and main components of MDE as well as the MDE framework I will use in the project.
 
 \subsection{Domain-Specific Modelling Languages (DSMLs)}
 Meta-meta-modelling mechanisms such as the Object Management Group's (OMG) Meta Object Facility (MOF) can be used to create modelling languages for a given problem domain \parencite{mussbacher2014relevance}. The key components of the OMG's approach to DSMLs are \parencite{bezivin2001towards}:
@@ -165,8 +167,6 @@ Meta-meta-modelling mechanisms such as the Object Management Group's (OMG) Meta 
 \item[Meta-models:] A meta-model is the explicit specification of an abstraction (i.e. model). 
 \item[Meta-meta-models:]  A meta-meta-model is used to define meta-models. In particular, the OMG define the MOF (Meta Object Facility) which is a self-defined meta-meta-model.
 \end{description}
-
-% TODO: insert figure of MDA layers?
 
 \subsection{Model Transformations}
 There are three main categories of model transformation:
@@ -196,8 +196,8 @@ Epsilon has been chosen as the framework for this project over others for the fo
 \item I am already familiar with how to use the framework.
 \end{itemize}
 
-\section{Microcontroller Background}
-The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core processor whereas the Arduino Uno only has a single core. In this case, the parallelised elements of the source code must be adapted to run on a single core. The following section highlights the important features and differences between the two boards.
+\section{Microcontroller Background} \label{mc_bg}
+The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core processor whereas the Arduino Uno only has a single core. In this case, the parallelised elements of the source code must be adapted to run on a single core. The following section highlights the important features and differences between the two boards as well as an overview of the board layout.
 
 \subsection{Parallax Propeller Activity Board}
 \begin{figure}[h!]
