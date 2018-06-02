@@ -1,7 +1,12 @@
 \documentclass{UoYCSproject}
+
 \usepackage[backend=biber]{biblatex}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{booktabs}
+
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
 \addbibresource{references.bib}
 \author{Sophie Wood}
 \title{Model-driven software migration between microcontrollers}
@@ -265,9 +270,26 @@ In order to guide the requirements gathering process for the project, the main s
 
 \section{Stakeholder Requirements}
 %TODO
+\begin{table*}[h!]\centering
+\ra{1.3}
+  \begin{tabular}{@{}lll@{}} \toprule 
+  ID & Description & Acceptance Criteria \\
+  \midrule
+  S-1 & TODO & TODO \\ 
+  S-2 & TODO & TODO \\
+  S-3 & TODO & TODO \\
+  S-4 & TODO & TODO \\
+  S-5 & TODO & TODO \\
+  \bottomrule
+  \end{tabular}
+\caption{Stakeholder Requirements}
+\end{table*}
 
 \section{System Requirements}
+\subsection{Functional Requirements}
+\subsection{Non-Functional Requirements}
 %TODO
+
 
 \chapter{Design and Implementation}
 %TODO
