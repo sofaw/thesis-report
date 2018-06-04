@@ -27,6 +27,8 @@
 % TODO update acknowledgements
 \acknowledgements{TODO}
 
+%TODO add statement of ethics
+
 \begin{document}
 \maketitle
 \listoffigures
@@ -240,11 +242,40 @@ The key features of the Arduino Uno are \parencite{arduinospec}:
 \end{itemize}
 
 \chapter{Methodology}
+%TODO intro
+%\parencite{fernandez2008agile}
+\section{Overview of Methodologies}
+Project management methodologies can be roughly categorised as either traditional or agile methodologies. Each have their own strengths and weaknesses. Sections \ref{trad_meth} and \ref{agile_meth} provide an overview of these methodologies.
+\subsection{Traditional Methodologies} \label{trad_meth}
+Traditional approaches include the waterfall/linear methodology and the incremental strategy. The common features of these methodologies are that they are very structured and there is little room for deviation from the original plan. For example, the waterfall methodology splits the project into separate stages for software requirements gathering, systems requirements gathering, analysis, design, coding, testing and operations such that each section is completed before the next begins \parencite{royce1987managing}.
+
+These strategies are best suited to projects that have a clear goal and clear solution. In this case, the use of these strategies can have many benefits, including \parencite{fernandez2008agile}:
+\begin{itemize}
+\item the entire project is scheduled
+\item resource requirements are known
+\item team members can be distributed
+\end{itemize}
+However, these approaches also exhibit weaknesses, they \parencite{fernandez2008agile}:
+\begin{itemize}
+\item require heavy documentation
+\item require a detailed plan
+\item have difficulty adapting to changes in requirements
+\end{itemize}
+
+\subsection{Agile Methodologies} \label{agile_meth}
 %TODO
+\section{Choice of Methodology}
+%TODO
+\section{Project Management}
+This section discusses the tools used in order to manage the project. This includes tools for task management as well as version control tools for the source code and report.
+%TODO - probably need to have a better task management system given use of agile methodology
+% Can still talk about project page but then potentially link to external TODO application
+
 
 \chapter{Requirements}
-%TODO: intro
-\section{Requirements Gathering}
+This chapter discusses the requirements that must be satisfied in order to consider the project successful. Firstly, Section \ref{req_gathering} introduces the sources used to derive requirements including the relevant stakeholders for the project. Then Sections \ref{stakeholder_reqs} and \ref{sys_reqs} summarise the stakeholder and system requirements respectively. Each requirement is assigned an identifier and a priority based on the MoSCoW categorisation system. In decreasing order, the priority levels each requirement can have are \textbf{M} (must have), \textbf{S} (should have), \textbf{C} (could have) and \textbf{W} (won't have).
+
+\section{Requirements Elicitation} \label{req_gathering}
 This section discusses the main sources considered for deriving requirements. Firstly, a summary of the initial project statement is presented in Section \ref{proj_stmt} as this is helpful for deriving the functional requirements for the project. Secondly, stakeholders for the project are identified in Section \ref{stakeholders} in order to enable gathering of stakeholder requirements.
 
 \subsection{Project Statement} \label{proj_stmt}
@@ -258,38 +289,95 @@ The initial project statement is as follows:
 \end{quote}
 
 \subsection{Stakeholders} \label{stakeholders}
-In order to guide the requirements gathering process for the project, the main stakeholders were considered. The rest of this section introduces the roles of the primary stakeholders and gives a high-level overview of their goals for the project.
+Stakeholders are parties that are interested in the development of the project and therefore their goals must be taken into account when deriving requirements. The rest of this section introduces the roles of the primary stakeholders and gives a high-level overview of their objectives for the project.
 
 \begin{description}
-\item[Student/Project Developer:] Responsible for system design, development and testing. Priority is successfully completing the project on time.
+\item[Student/Project Developer:] Responsible for research, system design, development and testing. Primarily interested in demonstrating the efficacy of an MDE based approach to software migration and successfully completing the project on time.
 
-\item[Project Supervisor:] Responsible for meeting regularly with the student. Their goal is also for the system to be finished within schedule.
+\item[Project Supervisor:] Responsible for meeting regularly with the student and guiding the research for the project. Their goal is also for the system to be finished within schedule.
 
-\item[End Users:] Two categories of end users can be considered. Firstly, those that will use the system as is to perform software migration from the Parallax Propeller Activity Board to Arduino Uno. Secondly, a potentially larger group is users that may like to adapt the project to migrate software between different microcontrollers. For example, DSTL is investigating migration between microprocessors such as the FS P4080 \parencite{gerasimou2017technical}. The first user group will be primarily concerned with usability whereas the second user group will be more concerned about modifiability.
+\item[Software Obsolescence Researchers:] Although not directly involved in the project, the results of the project may be of interest to researchers in the field of software obsolescence. In particular, the project explores an alternative approach to the migration of software between microcontrollers presented in \parencite{gerasimou2017technical}. This is a particular problem of interest to the DSTL. However, they are specifically investigating migration between their own microcontrollers such as the FS P4080. Therefore, they would require that the system is easily understandable and can be adapted to work with microcontrollers other than the Parallax Propeller Activity Board and the Arduino Uno.
+
+\item[End Users:] No end users are directly involved in the project. However, some people may want to use the resulting system as is to migrate software from a Parallax Propeller Activity Board to an Arduino Uno. In this case, their main priority would be usability of the system. Additionally, it is important that the performance of the migrated software is not significantly worse than the source application. However, as this is a very specific scenario, it is unlikely that this user group will be very large. Similarly to software obsolescence researchers, it may be more useful to end users if the system can be easily modified to support migration between different microcontrollers.
 \end{description}
 
-\section{Stakeholder Requirements}
-%TODO
+\section{Stakeholder Requirements} \label{stakeholder_reqs}
+Table \ref{table:stakeholder_req} summarises the stakeholder requirements for the system. Each requirement has an identifier of the form S-X (where X is an integer).
 \begin{table*}[h!]\centering
 \ra{1.3}
-  \begin{tabular}{@{}lll@{}} \toprule 
-  ID & Description & Acceptance Criteria \\
+  \begin{tabular}{@{}p{0.1\textwidth}p{0.15\textwidth}p{0.75\textwidth}@{}} \toprule 
+  \textbf{ID} & \textbf{Priority} & \textbf{Description} \\
   \midrule
-  S-1 & TODO & TODO \\ 
-  S-2 & TODO & TODO \\
-  S-3 & TODO & TODO \\
-  S-4 & TODO & TODO \\
-  S-5 & TODO & TODO \\
+  S-1 & M & Users can provide the system with the source code for a Parallax Propeller Activity Board and target code for the Arduino Uno will be generated. \\ 
+  S-2 & M & Users can easily adapt the system to support migration of software between different microprocessors. \\
+  S-3 & S & Users can easily determine sources of errors when using the system. \\
+  S-4 & S & Users can easily identify areas of the target code that cannot automatically be migrated and must be manually completed. \\
+  S-5 & S & The performance of the migrated code is not significantly worse than the source application. \\
   \bottomrule
   \end{tabular}
 \caption{Stakeholder Requirements}
+\label{table:stakeholder_req}
 \end{table*}
 
-\section{System Requirements}
-\subsection{Functional Requirements}
-\subsection{Non-Functional Requirements}
-%TODO
+\section{System Requirements} \label{sys_reqs}
+The following section summarises the functional and non-functional requirements of the system. Each functional requirement is assigned an identifier of the form F-X (where X is an integer) and each non-functional requirement is assigned an identifier of the form NF-X (where X is an integer).
 
+Note that valid source code refers to an application which compiles and runs correctly on the source microprocessor and only uses hardware capabilities provided by both microcontrollers.
+\newpage
+\subsection{Functional Requirements}
+Table \ref{table:func_req} summarises the functional requirements and their acceptance criteria for the system.
+\begin{table*}[h!]\centering
+\ra{1.3}
+  \begin{tabular}{@{}p{0.05\textwidth}p{0.1\textwidth}p{0.425\textwidth}p{0.425\textwidth}@{}} \toprule 
+  \textbf{ID} & \textbf{Priority} & \textbf{Description} & \textbf{Acceptance Criteria} \\
+  \midrule
+  F-1 & M & The target microcontoller running the migrated code (potentially with manual additions) displays the same behaviour as the source microcontroller, provided the source code is valid. & Manual inspection of the migrated application confirms the behaviour is the same as the source application. \\
+  F-2 & M & The migrated code deploys without errors on the target microcontroller if the provided source code is valid. & Manual inspection of the migration process confirms a valid source application can be migrated without errors. \\
+  F-3 & S & The system displays appropriate errors when the source code cannot be migrated (e.g. there are errors in the source code or hardware incompatibilities). & All unit tests pass which check appropriate errors are thrown when invalid source code is provided to the migration process. \\  
+  F-4 & S & The system clearly indicates any errors that have occurred during its use (e.g. the migration process fails). & All unit tests pass which check appropriate errors are thrown when valid source code is provided to the migration process.\\
+  F-5 & S & The system should indicate any parts of the code that must be manually completed. & Manual inspection of the migrated code confirms that all parts of the code that must be manually completed are clearly indicated (e.g. by TODO directives). \\
+  \bottomrule
+  \end{tabular}
+\caption{Functional Requirements}
+\label{table:func_req}
+\end{table*}
+
+\subsection{Non-Functional Requirements}
+Table \ref{table:non_func_req} summarises the non-functional requirements and their acceptance criteria for the system.
+\begin{table*}[h!]\centering
+\ra{1.3}
+  \begin{tabular}{@{}p{0.08\textwidth}p{0.1\textwidth}p{0.41\textwidth}p{0.41\textwidth}@{}} \toprule 
+  \textbf{ID} & \textbf{Priority} & \textbf{Description} & \textbf{Acceptance Criteria} \\
+  \midrule
+  NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. \\
+  NF-2 & S & The system should display a high-level of encapsulation.  & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. \\
+  NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is less than 1.5 times the size of the source application. \\
+  NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in less than 1.5 times the duration of the source application. \\
+  
+  \bottomrule
+  \end{tabular}
+\caption{Non-Functional Requirements}
+\label{table:non_func_req}
+\end{table*}
+
+\newpage
+\section{Requirements Traceability Matrix}
+The requirements traceability matrix shown in Table \ref{table:traceability} shows how stakeholder requirements correspond to system requirements.
+\begin{table*}[h!]\centering
+\ra{1.3}
+  \begin{tabular}{@{}p{0.4\textwidth}p{0.4\textwidth}@{}} \toprule 
+  \textbf{Stakeholder Requirements} & \textbf{System Requirements} \\
+  \midrule
+  S-1 & F-1, F-2 \\
+  S-2 & NF-1, NF-2, NF-3 \\
+  S-3 & F-2, F-3, F-4 \\
+  S-4 & F-5 \\
+  S-5 & NF-4 \\
+  \bottomrule
+  \end{tabular}
+\caption{Requirements Traceability Matrix}
+\label{table:traceability}
+\end{table*}
 
 \chapter{Design and Implementation}
 %TODO
