@@ -249,6 +249,7 @@ Project management methodologies can be roughly categorised as either traditiona
 \subsection{Traditional Methodologies} \label{trad_meth}
 Traditional approaches include the waterfall/linear methodology and the incremental strategy. The common features of these methodologies are that they are very structured and there is little room for deviation from the original plan. For example, the waterfall methodology splits the project into separate stages for software requirements gathering, systems requirements gathering, analysis, design, coding, testing and operations such that each section is completed before the next begins \parencite{royce1987managing}.
 
+%TODO remove bullet lists?
 These strategies are best suited to projects that have a clear goal and clear solution. In this case, the use of these strategies can have many benefits, including \parencite{fernandez2008agile}:
 \begin{itemize}
 \item the entire project is scheduled
@@ -263,14 +264,27 @@ However, these approaches also exhibit weaknesses, they \parencite{fernandez2008
 \end{itemize}
 
 \subsection{Agile Methodologies} \label{agile_meth}
-%TODO
+Agile methodologies are generally better at accommodating change than traditional methodologies as they repeatedly return to earlier stages in the development process. For example, Figure \ref{fig:agile_meths} shows a (simplified) view of the stages involved in the iterative, adaptive and extreme agile methodologies. Each approach goes through the full development process, tests and/or deploys the system (or a part of the system) and optionally returns to either the build, design or scope stage depending on the outcome of testing and deployment. This cycle can occur multiple times in the project lifecycle and is referred to as a sprint. Sprints generally last a few weeks but this can vary depending on the project.
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/agile_methodologies.png}
+  \caption{An overview of the iterative, adaptive and extreme agile methodologies \parencite{fernandez2008agile}.}
+  \label{fig:agile_meths}
+\end{figure}
+
+As previously mentioned, the ability to return to earlier stages in the development process helps accommodate changing requirements. For example, the client can review what is produced at the end of each sprint and clarify or change requirements depending on the outcome. However, an agile approach requires much closer communication with the client which may not always be possible or desirable. Secondly, since requirements are not fixed for the duration of the project, the final product is not always clear from the start of the project \parencite{fernandez2008agile}.
+
 \section{Choice of Methodology}
-%TODO
+The approach for this project is fairly well defined i.e. an MDE-based method will be used to perform software migration. However, the requirements are likely to change throughout the course of the project depending on the success of system prototypes. As such, the project is more suited to an agile methodology as this can more easily manage these changes. Additionally, I will be meeting with the project supervisor weekly which will allow us to work on updating the requirements as necessary and allows the project to be easily split into sprints beginning and ending at these meetings. In particular, the extreme methodology will be the most suitable as it allows for changing the scope which may be required if early research indicates the scope is unsuitable for the time allocated.
+
 \section{Project Management}
 This section discusses the tools used in order to manage the project. This includes tools for task management as well as version control tools for the source code and report.
-%TODO - probably need to have a better task management system given use of agile methodology
-% Can still talk about project page but then potentially link to external TODO application
 
+At the start of the project a GANTT chart was created in order to give a rough estimate for when certain parts of the project would be completed. This was not updated throughout the project and doesn't particularly fit with the agile methodology but it was helpful to ensure progress was being made at about the right pace. In particular, this was helpful for writing the report.
+
+The GANTT chart was included in the project page which was created using Google Sites. This page was used for task management and for organising the literature review. Google Sites was chosen as it is free and can be easily adapted to suit the project. The literature review was organised by creating pages on the site for each category within the literature review (e.g. MDE background) and collecting notes from the relevant papers on these pages. The site also contained a list of papers to be read and a list of tasks to be completed.
+
+Git was used as the version control system for both the source code of the system and the documentation as it is free and I already had experience using it. The remote repositories were hosted on GitHub as it allows students to use private repositories for free. In particular, Git was chosen for managing the documentation over e.g. Google Drive as the report was written in \LaTeX~and so updates to the main report document would require changes to e.g. image files or the bibliography file. As such, it is easier to backup all these files at once using a single Git command over adding and deleting files from Google Drive. Additionally, the file history is saved using Git so it is easier to return to previous versions of the documentation.
 
 \chapter{Requirements}
 This chapter discusses the requirements that must be satisfied in order to consider the project successful. Firstly, Section \ref{req_gathering} introduces the sources used to derive requirements including the relevant stakeholders for the project. Then Sections \ref{stakeholder_reqs} and \ref{sys_reqs} summarise the stakeholder and system requirements respectively. Each requirement is assigned an identifier and a priority based on the MoSCoW categorisation system. In decreasing order, the priority levels each requirement can have are \textbf{M} (must have), \textbf{S} (should have), \textbf{C} (could have) and \textbf{W} (won't have).
