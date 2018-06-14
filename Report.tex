@@ -57,7 +57,7 @@ If redevelopment projects can be automated or even partially automated, they can
 
 An alternative approach is to use model-driven software modernisation (MDSM) for (partial) automation of modernisation projects. MDSM is based on the use of model-driven engineering (MDE) principles such as models and transformations to facilitate the migration process (MDE and its application to software modernisation are discussed in more detail in Sections \ref{mde_approaches} and \ref{mde_bg}). For example, model-to-model transformations can be used to map a model of the legacy code to a model of the new system. A model-to-text transformation can then be applied to this new model to generate code for the new version of the system.
 
-MDSM is a promising approach as it has already been proved feasible in industry by the Sodifrance company. For example, they were able to migrate a large-scale banking system (at a size of around one million lines of code) to J2EE \parencite{fleurey2007model}. Kowalczyk and Kwieci\'nska have also demonstrated the viability of MDSM by modernising a project written in Java 1.4 and the Hibernate 2.x framework into Java 1.5 and Hibernate 3.x \parencite{kowalczyk2009model}. One benefit of MDSM is that tools (e.g. model discoverers) can sometimes be reused between projects making subsequent modernisation projects quicker and cheaper to complete. For example, MoDisco is an open-source model-discoverer that can generate models from Java code \parencite{bruneliere2014modisco}.
+MDSM is a promising approach as it has already been proved feasible in industry by the Sodifrance\footnote{https://www.sodifrance.fr/} company. For example, they were able to migrate a large-scale banking system (at a size of around one million lines of code) to J2EE \parencite{fleurey2007model}. Kowalczyk and Kwieci\'nska have also demonstrated the viability of MDSM by modernising a project written in Java 1.4 and the Hibernate 2.x framework into Java 1.5 and Hibernate 3.x \parencite{kowalczyk2009model}. One benefit of MDSM is that tools (e.g. model discoverers) can sometimes be reused between projects making subsequent modernisation projects quicker and cheaper to complete. For example, MoDisco is an open-source model-discoverer that can generate models from Java code \parencite{bruneliere2014modisco}.
 
 The Defence Science and Technology Laboratory (DSTL) at the Ministry of Defence (MoD) have identified several instances of software obsolescence they would like to tackle. A problem of particular interest is ``the migration of an entire software system from a legacy hardware platform to a modern more powerful platform'' \parencite{gerasimou2017technical}. This report will explore how MDSM processes can be used to partially automate the migration of code between microprocessors. A case study implementing the migration of code between a Parallax Propeller Activity Board and an Arduino Uno will be used to demonstrate the approach developed.
  
@@ -75,9 +75,9 @@ Sections \ref{mde_bg} and \ref{mc_bg} contain the technical background of the pr
 
 \section{Existing Work}
 \subsection{Approaches to Software Obsolescence} \label{so_approaches}
-Rojo et al. summarise the existing literature for tackling obsolescence up to 2010 in their paper ``Obsolescence management for long-life contracts: state of the art and future trends'' \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence. Yet, they propose that sectors such as the defence industry would benefit from managing this problem.
+Rojo et al. identify some of the main methods of tackling obsolescence in their paper ``Obsolescence management for long-life contracts: state of the art and future trends'' \parencite{rojo2010obsolescence}. Although they identified many strategies for handling the obsolescence of electronic components, very few methods were relevant for dealing with software obsolescence.
 
-They did identify two tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) that could be useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
+The tools ``se-Fly Fisher'' and ``R2T2'' (Rapid Response Technology Trade) were identified as useful for managing software obsolescence. These tools are used for design refresh planning. Design refresh planning deals with obsolescence in a proactive manner by planning the best times for performing a redesign of the system during the sustainment stage of its lifecycle. 
 
 Se-Fly Fisher uses the technology curves of each part of the system to: forecast how often a system baseline should change; identify replacement resources and estimate the benefit of each system baseline change \parencite{rojo2010obsolescence}.
 
@@ -100,7 +100,10 @@ The company Sodifrance has successfully been using MDE for development and migra
 
 \begin{enumerate}
 \item Firstly, the code of the legacy application is parsed in order to create a model of the legacy system. In Figure \ref{fig:sodifrance_process}, \textit{L} indicates the metamodel for the implementation language of the legacy code.
-\item This model is then transformed to a Platform Independent Model (PIM) conforming to an ANT metamodel. This model represents a high-level view of the legacy code. This process is dependent on knowledge of the libraries and coding conventions used by the legacy platform.
+\item This model is then transformed to a Platform Independent Model (PIM) conforming to an ANT metamodel\footnote{An ANT metamodel contains packages to represent:
+\begin{itemize}\item Static data structures (close to the UML class diagram).\item Actions and algorithms (it includes an imperative action language).
+\item Graphical user interfaces and widgets.\item Application navigation.
+\end{itemize}}. This model represents a high-level view of the legacy code. This process is dependent on knowledge of the libraries and coding conventions used by the legacy platform.
 \item Next the PIM has a model transformation applied to produce a Platform Specific Model (PSM) conforming to a UML metamodel. The high-level views from the PIM are adapted to fit the target platform.
 \item Finally, code is generated from the PSM by using template-based text generation tools.
 \end{enumerate}
@@ -131,7 +134,7 @@ MDE approaches to software migration have many benefits. The primary reason is t
 
 There are however, drawbacks to the MDE approach. There is a high cost of entry to start using MDE methods --- the initial development of processes and tools can be time consuming and expensive if open-source tools are not available. Secondly, a particular issue in commercial projects is that no code will be available until the initial analysis and tool development stage of the process is completed. In the case of the Sodifrance case study, code was not delivered until 10 months after the project had begun \parencite{fleurey2007model}. This can make customers nervous and reluctant to try this approach. On the other hand, once the initial stage is completed, the delivery rate of the code can be much faster than for a standard re-development approach.
 
-One of the main considerations that must be made when choosing an MDE approach is the size of the project. If the project is small, it may be more expensive to use this method as the initial stages may take longer than manually migrating the code. This is demonstrated in Figure \ref{fig:costvsize}.
+One of the main considerations that must be made when choosing an MDE approach is the size of the project. If the project is small, it may be more expensive to use this method as the initial stages may take longer than manually migrating the code \parencite{fleurey2007model}. This is demonstrated in Figure \ref{fig:costvsize}.
 
 \begin{figure}[h!]
   \includegraphics[width=\linewidth]{graphics/costvsize.png}
@@ -175,6 +178,15 @@ Meta-meta-modelling mechanisms such as the Object Management Group's (OMG) Meta 
 \item[Meta-meta-models:]  A meta-meta-model is used to define meta-models. In particular, the OMG define the MOF (Meta Object Facility) which is a self-defined meta-meta-model.
 \end{description}
 
+The relationships between these MDE concepts are summarised in Figure \ref{fig:metamodel_term}
+
+\begin{figure}[h!]
+  \includegraphics[width=0.5\linewidth]{graphics/metamodel_terminology.png}
+  \caption{The relationship between the key concepts in MDE \parencite{bezivin2004search}.}
+  \label{fig:metamodel_term}
+\end{figure}
+
+
 \subsection{Model Transformations}
 There are three main categories of model transformation:
 \begin{description}
@@ -204,7 +216,7 @@ Epsilon has been chosen as the framework for this project over others for the fo
 \end{itemize}
 
 \section{Microcontroller Background} \label{mc_bg}
-The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board uses an 8-core processor whereas the Arduino Uno only has a single core. In this case, the parallelised elements of the source code must be adapted to run on a single core. The following section highlights the important features and differences between the two boards as well as an overview of the board layout.
+The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board has 16 digital pins whereas the Arduino Uno only has 14. In this case, code may need to be adapted to use different pins on the Arduino if it is migrated from the Propeller Activity Board. The following section highlights the important features and differences between the two boards as well as an overview of the board layout.
 
 \subsection{Parallax Propeller Activity Board}
 \begin{figure}[h!]
