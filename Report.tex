@@ -287,7 +287,7 @@ The GANTT chart was included in the project page which was created using Google 
 Git was used as the version control system for both the source code of the system and the documentation as it is free and I already had experience using it. The remote repositories were hosted on GitHub as it allows students to use private repositories for free. In particular, Git was chosen for managing the documentation over e.g. Google Drive as the report was written in \LaTeX~and so updates to the main report document could require changes to e.g. image files or the bibliography file. As such, it is easier to backup all these files at once using a single Git command rather than adding and deleting files from Google Drive. Additionally, the file history is saved using Git so it is easier to return to previous versions of the documentation.
 
 \chapter{Requirements}
-This chapter discusses the requirements that must be satisfied in order to consider the project successful. Firstly, Section \ref{req_gathering} introduces the sources used to derive requirements including the relevant stakeholders for the project. Then Sections \ref{stakeholder_reqs} and \ref{sys_reqs} summarise the stakeholder and system requirements respectively. Each requirement is assigned an identifier and a priority based on the MoSCoW categorisation system. In decreasing order, the priority levels each requirement can have are \textbf{M} (must have), \textbf{S} (should have), \textbf{C} (could have) and \textbf{W} (won't have).
+This chapter discusses the requirements that must be satisfied in order to consider the project successful. Firstly, Section \ref{req_gathering} introduces the sources used to derive requirements including the relevant stakeholders for the project. Then Sections \ref{stakeholder_reqs} and \ref{sys_reqs} summarise the stakeholder and system requirements respectively. Each requirement is assigned an identifier and a priority based on the MoSCoW categorisation system \parencite{moscow}. In decreasing order, the priority levels each requirement can have are \textbf{M} (must have), \textbf{S} (should have), \textbf{C} (could have) and \textbf{W} (won't have).
 
 \section{Requirements Elicitation} \label{req_gathering}
 This section discusses the main sources considered for deriving requirements. Firstly, a summary of the initial project statement is presented in Section \ref{proj_stmt} as this is helpful for deriving the functional requirements for the project. Secondly, stakeholders for the project are identified in Section \ref{stakeholders} in order to enable gathering of stakeholder requirements.
@@ -312,7 +312,7 @@ Stakeholders are parties that are interested in the development of the project a
 
 \item[Software Obsolescence Researchers:] Although not directly involved in the project, the results of the project may be of interest to researchers in the field of software obsolescence. In particular, the project explores an alternative approach to the migration of software between microcontrollers presented in \parencite{gerasimou2017technical}. This is a particular problem of interest to the DSTL. However, they are specifically investigating migration between their own microcontrollers such as the FS P4080. Therefore, they would require that the system is easily understandable and can be adapted to work with microcontrollers other than the Parallax Propeller Activity Board and the Arduino Uno.
 
-\item[End Users:] No end users are directly involved in the project. However, some people may want to use the resulting system as is to migrate software from a Parallax Propeller Activity Board to an Arduino Uno. In this case, their main priority would be usability of the system. Additionally, it is important that the performance of the migrated software is not significantly worse than the source application. However, as this is a very specific scenario, it is unlikely that this user group will be very large. Similarly to software obsolescence researchers, it may be more useful to end users if the system can be easily modified to support migration between different microcontrollers.
+\item[End Users:] No end users are directly involved in the project. However, some people may want to use the resulting system as is to migrate software from a Parallax Propeller Activity Board to an Arduino Uno. In this case, their main priority would be usability of the system. Additionally, it is important that the performance of the migrated software is not significantly worse than the source application. However, as this is a very specific scenario, it is unlikely that this user group will be very large. Similarly to software obsolescence researchers, it may be more useful to end users if the system can be easily modified to support migration between microcontrollers other than the Parallax Propeller Activity Board and Arduino Uno.
 \end{description}
 
 \section{Stakeholder Requirements} \label{stakeholder_reqs}
@@ -347,8 +347,8 @@ Table \ref{table:func_req} summarises the functional requirements and their acce
   \midrule
   F-1 & M & The target microcontoller running the migrated code (potentially with manual additions) displays the same behaviour as the source microcontroller, provided the source code is valid. & Manual inspection of the migrated application confirms the behaviour is the same as the source application. \\
   F-2 & M & The migrated code deploys without errors on the target microcontroller if the provided source code is valid. & Manual inspection of the migration process confirms a valid source application can be migrated without errors. \\
-  F-3 & S & The system displays appropriate errors when the source code cannot be migrated (e.g. there are errors in the source code or hardware incompatibilities). & All unit tests pass which check appropriate errors are thrown when invalid source code is provided to the migration process. \\  
-  F-4 & S & The system clearly indicates any errors that have occurred during its use (e.g. the migration process fails). & All unit tests pass which check appropriate errors are thrown when valid source code is provided to the migration process.\\
+  F-3 & S & The system displays appropriate errors when the source code cannot be migrated (e.g. there are errors in the source code or hardware incompatibilities). & Errors are thrown when invalid source code is provided to the migration process. \\  
+  F-4 & S & The system clearly indicates any errors that have occurred during its use (e.g. the migration process fails). & Errors are thrown if the migration process fails. The errors clearly indicate the source of the problem. \\
   F-5 & S & The system should indicate any parts of the code that must be manually completed. & Manual inspection of the migrated code confirms that all parts of the code that must be manually completed are clearly indicated (e.g. by TODO directives). \\
   \bottomrule
   \end{tabular}
@@ -366,7 +366,7 @@ Table \ref{table:non_func_req} summarises the non-functional requirements and th
   NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. \\
   NF-2 & S & The system should display a high-level of encapsulation.  & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. \\
   NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is less than 1.5 times the size of the source application. \\
-  NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in less than 1.5 times the duration of the source application. \\
+  NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. \\
   
   \bottomrule
   \end{tabular}
@@ -394,7 +394,38 @@ The requirements traceability matrix shown in Table \ref{table:traceability} sho
 \end{table*}
 
 \chapter{Design and Implementation}
-%TODO
+\section{Overview}
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/high_level_overview.png}
+  \caption{A high-level overview of the system.}
+  \label{fig:high_level_overview}
+\end{figure}
+// TODO
+
+\section{Fritzing Netlist Analysis}
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/fritzing_analysis.png}
+  \caption{A more detailed view of the Fritzing netlist analysis component of the system.}
+  \label{fig:fritzing_analysis}
+\end{figure}
+// TODO
+
+\section{Arduino Library Analysis}
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/arduino_library_analysis.png}
+  \caption{A more detailed view of the Arduino library analysis component of the system.}
+  \label{fig:arduino_analysis}
+\end{figure}
+// TODO
+
+\section{Parallax Project Analysis}
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{graphics/parallax_project_analysis.png}
+  \caption{A more detailed view of the Parallax project analysis component of the system.}
+  \label{fig:parallax_analysis}
+\end{figure}
+// TODO
+
 
 \chapter{Evaluation}
 %TODO
