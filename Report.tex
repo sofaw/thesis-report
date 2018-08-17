@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{booktabs}
+\usepackage{caption}
 
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 
@@ -365,7 +366,7 @@ Table \ref{table:non_func_req} summarises the non-functional requirements and th
   \midrule
   NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. \\
   NF-2 & S & The system should display a high-level of encapsulation.  & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. \\
-  NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is less than 1.5 times the size of the source application. \\
+  NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is of a size acceptable to the stakeholder. \\
   NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. \\
   
   \bottomrule
@@ -394,38 +395,53 @@ The requirements traceability matrix shown in Table \ref{table:traceability} sho
 \end{table*}
 
 \chapter{Design and Implementation}
-\section{Overview}
+This chapter of the report discusses the decisions made in designing and implementing the system for supporting the migration of software from a Parallax Propeller Activity Board to an Arduino. The system is implemented as an Eclipse plugin to assist in usability. Firstly, the high-level architecture of the plugin will be presented in Section \ref{high_lev_arch} along with the design rationale. This will be followed by an examination of the low-level architecture of these components in Section \ref{low_lev_arch}. Finally the implementation details of the system will be discussed in Section \ref{impl}.
+
+
+\section{High-Level Architecture} \label{high_lev_arch}
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/high_level_overview.png}
-  \caption{A high-level overview of the system.}
+  \begin{center}
+    \includegraphics[width=0.8\linewidth]{graphics/high_level_overview.png}
+    \caption{A high-level overview of the system.}
+  \end{center}
   \label{fig:high_level_overview}
 \end{figure}
 // TODO
 
-\section{Fritzing Netlist Analysis}
+\section{Low-Level Architecture} \label{low_lev_arch}
+\subsection{Fritzing Netlist Analysis}
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/fritzing_analysis.png}
-  \caption{A more detailed view of the Fritzing netlist analysis component of the system.}
+\captionsetup{justification=centering}
+  \begin{center}
+    \includegraphics[width=0.8\linewidth]{graphics/fritzing_analysis.png}
+    \caption{A more detailed view of the Fritzing netlist analysis component of the system.}
+  \end{center}
   \label{fig:fritzing_analysis}
 \end{figure}
 // TODO
 
-\section{Arduino Library Analysis}
+\subsection{Arduino Library Analysis}
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/arduino_library_analysis.png}
-  \caption{A more detailed view of the Arduino library analysis component of the system.}
+  \begin{center}
+    \includegraphics[width=0.8\linewidth]{graphics/arduino_library_analysis.png}
+    \caption{A more detailed view of the Arduino library analysis component of the system.}
+  \end{center}
   \label{fig:arduino_analysis}
 \end{figure}
 // TODO
 
-\section{Parallax Project Analysis}
+\subsection{Parallax Project Analysis}
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/parallax_project_analysis.png}
-  \caption{A more detailed view of the Parallax project analysis component of the system.}
+  \begin{center}
+    \includegraphics[width=0.8\linewidth]{graphics/parallax_project_analysis.png}
+    \caption{A more detailed view of the Parallax project analysis component of the system.}
+  \end{center}
   \label{fig:parallax_analysis}
 \end{figure}
 // TODO
 
+\section{Implementation} \label{impl}
+// TODO
 
 \chapter{Evaluation}
 %TODO
