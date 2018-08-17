@@ -395,7 +395,7 @@ The requirements traceability matrix shown in Table \ref{table:traceability} sho
 \end{table*}
 
 \chapter{Design and Implementation}
-This chapter of the report discusses the decisions made in designing and implementing the system for supporting the migration of software from a Parallax Propeller Activity Board to an Arduino. The system is implemented as an Eclipse plugin to assist in usability. Firstly, the high-level architecture of the plugin will be presented in Section \ref{high_lev_arch} along with the design rationale. This will be followed by an examination of the low-level architecture of these components in Section \ref{low_lev_arch}. Finally the implementation details of the system will be discussed in Section \ref{impl}.
+This chapter of the report discusses the decisions made in designing and implementing the system for supporting the migration of software from a Parallax Propeller Activity Board to an Arduino (these will be referred to as the source and target respectively). The system is implemented as an Eclipse plugin to assist in usability. Firstly, the high-level architecture of the plugin will be presented in Section \ref{high_lev_arch} along with the design rationale. This will be followed by an examination of the low-level architecture of these components in Section \ref{low_lev_arch}. Finally the implementation details of the system will be discussed in Section \ref{impl}.
 
 
 \section{High-Level Architecture} \label{high_lev_arch}
@@ -406,7 +406,24 @@ This chapter of the report discusses the decisions made in designing and impleme
   \end{center}
   \label{fig:high_level_overview}
 \end{figure}
-// TODO
+
+Figure \ref{fig:high_level_overview} shows the high-level architecture of the system. There are three main components to the system: Fritzing netlist analysis, Arduino libraries analysis and Parallax source code analysis. Each of these components produces information that contributes to code generation. The code generation is coordinated by an EGL transformation that takes the information from these components and generates a C file as output. This file acts as a basis for code that is compatible with the target platform. The components 
+
+Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pins 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. 
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.6\linewidth]{graphics/fritzing_graphic.png}
+  \captionof{figure}{An example Fritzing diagram.}
+  \label{fig:fritz_graph}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/fritzing_netlist.png}
+  \captionof{figure}{Part of the netlist generated for Figure \ref{fig:fritz_graph}.}
+  \label{fig:fritz_net}
+\end{figure}
 
 \section{Low-Level Architecture} \label{low_lev_arch}
 \subsection{Fritzing Netlist Analysis}
