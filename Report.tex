@@ -5,6 +5,8 @@
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{listings}
+\usepackage{color}
 
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 
@@ -456,17 +458,24 @@ The Fritzing netlist analysis component first consists of an XML to model transf
 Although the netlist could be queried directly, the resulting model contains the information in a format making the queries easier to write as well as combining information from the config. file. This adds extra processing time but based on the requirements, reusability is of higher concern than performance in this case.
 
 Simlarly, the output model from the transform could have been queried directly from the Code Generation EGL transform rather than having a separate EOL file to perform the queries. However, separating out the queries makes the logic in the EGL transform simpler as well as helping decouple the code generation from the implementation of the model/the query logic. This improves the modifiability and reusability of this component.
-% TODO: finish design section for fritzing analysis
 
 \subsection{Implementation}
-// TODO
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\linewidth]{graphics/fritz_metamodel.png}
+  \caption{The EMF representation of the Fritzing metamodel.}
+  \label{fig:fritz_metamodel}
+\end{figure}
+
+% TODO: finish fritz impl
+
 
 \section{Arduino Library Analysis}
 \begin{figure}[h!]
-  \begin{center}
-    \includegraphics[width=0.8\linewidth]{graphics/arduino_library_analysis.png}
-    \caption{A more detailed view of the Arduino library analysis component of the system.}
-  \end{center}
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/arduino_library_analysis.png}
+  \caption{A more detailed view of the Arduino library analysis component of the system.}
   \label{fig:arduino_analysis}
 \end{figure}
 
@@ -477,10 +486,9 @@ Simlarly, the output model from the transform could have been queried directly f
 
 \section{Parallax Project Analysis} \label{parallax_design}
 \begin{figure}[h!]
-  \begin{center}
-    \includegraphics[width=0.8\linewidth]{graphics/parallax_project_analysis.png}
-    \caption{A more detailed view of the Parallax project analysis component of the system.}
-  \end{center}
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/parallax_project_analysis.png}
+  \caption{A more detailed view of the Parallax project analysis component of the system.}
   \label{fig:parallax_analysis}
 \end{figure}
 
