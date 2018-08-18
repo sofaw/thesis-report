@@ -110,7 +110,8 @@ The company Sodifrance has successfully been using MDE for development and migra
 \end{enumerate}
 
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/sodifrance_mde.png}
+  \centering
+  \includegraphics[width=0.6\linewidth]{graphics/sodifrance_mde.png}
   \caption{The general model-driven migration process used by Sodifrance \parencite{fleurey2007model}.}
   \label{fig:sodifrance_process}
 \end{figure}
@@ -124,7 +125,8 @@ Kowalczyk and Kwieci\'nska have also explored the use of MDE in software migrati
 The RMA approach follows the same stages as that used by Sodifrance. The DTA approach shown in Figure \ref{fig:dta} reduces the number of stages involved in the transformation process by directly transforming between platform specific models. 
 
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/dta.png}
+  \centering
+  \includegraphics[width=0.6\linewidth]{graphics/dta.png}
   \caption{The stages involved in the ``Direct Transformation Approach''.}
   \label{fig:dta}
 \end{figure}
@@ -138,7 +140,8 @@ There are however, drawbacks to the MDE approach. There is a high cost of entry 
 One of the main considerations that must be made when choosing an MDE approach is the size of the project. If the project is small, it may be more expensive to use this method as the initial stages may take longer than manually migrating the code \parencite{fleurey2007model}. This is demonstrated in Figure \ref{fig:costvsize}.
 
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/costvsize.png}
+  \centering
+  \includegraphics[width=0.6\linewidth]{graphics/costvsize.png}
   \caption{Project migration cost as a function of its size \parencite{fleurey2007model}.}
   \label{fig:costvsize}
 \end{figure}
@@ -182,6 +185,7 @@ Meta-meta-modelling mechanisms such as the Object Management Group's (OMG) Meta 
 The relationships between these MDE concepts are summarised in Figure \ref{fig:metamodel_term}
 
 \begin{figure}[h!]
+  \centering
   \includegraphics[width=0.5\linewidth]{graphics/metamodel_terminology.png}
   \caption{The relationship between the key concepts in MDE \parencite{bezivin2004search}.}
   \label{fig:metamodel_term}
@@ -221,7 +225,8 @@ The project involves migration of code from a Parallax Propeller Activity Board 
 
 \subsection{Parallax Propeller Activity Board}
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/propeller_board.png}
+  \centering
+  \includegraphics[width=0.6\linewidth]{graphics/propeller_board.png}
   \caption{Features of the Parallax Propeller Activity Board \parencite{propellerspec}.}
   \label{fig:prop_board}
 \end{figure}
@@ -239,7 +244,8 @@ The key features of the Parallax Propeller Activity Board are \parencite{propell
 \subsection{Arduino Uno}
 %TODO: figure out which version I will be using
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{graphics/arduino_board.jpg}
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/arduino_board.jpg}
   \caption{Features of the Arduino Uno \parencite{arduinodiagram}.}
   \label{fig:arduino_uno}
 \end{figure}
@@ -287,7 +293,7 @@ The GANTT chart was included in the project page which was created using Google 
 
 Git was used as the version control system for both the source code of the system and the documentation as it is free and I already had experience using it. The remote repositories were hosted on GitHub as it allows students to use private repositories for free. In particular, Git was chosen for managing the documentation over e.g. Google Drive as the report was written in \LaTeX~and so updates to the main report document could require changes to e.g. image files or the bibliography file. As such, it is easier to backup all these files at once using a single Git command rather than adding and deleting files from Google Drive. Additionally, the file history is saved using Git so it is easier to return to previous versions of the documentation.
 
-\chapter{Requirements}
+\chapter{Requirements} \label{reqs}
 This chapter discusses the requirements that must be satisfied in order to consider the project successful. Firstly, Section \ref{req_gathering} introduces the sources used to derive requirements including the relevant stakeholders for the project. Then Sections \ref{stakeholder_reqs} and \ref{sys_reqs} summarise the stakeholder and system requirements respectively. Each requirement is assigned an identifier and a priority based on the MoSCoW categorisation system \parencite{moscow}. In decreasing order, the priority levels each requirement can have are \textbf{M} (must have), \textbf{S} (should have), \textbf{C} (could have) and \textbf{W} (won't have).
 
 \section{Requirements Elicitation} \label{req_gathering}
@@ -365,7 +371,7 @@ Table \ref{table:non_func_req} summarises the non-functional requirements and th
   \textbf{ID} & \textbf{Priority} & \textbf{Description} & \textbf{Acceptance Criteria} \\
   \midrule
   NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. \\
-  NF-2 & S & The system should display a high-level of encapsulation.  & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. \\
+  NF-2 & S & The system should display a high-level of encapsulation. & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. \\
   NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is of a size acceptable to the stakeholder. \\
   NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. \\
   
@@ -395,21 +401,19 @@ The requirements traceability matrix shown in Table \ref{table:traceability} sho
 \end{table*}
 
 \chapter{Design and Implementation}
-This chapter of the report discusses the decisions made in designing and implementing the system for supporting the migration of software from a Parallax Propeller Activity Board to an Arduino (these will be referred to as the source and target respectively). The system is implemented as an Eclipse plugin to assist in usability. Firstly, the high-level architecture of the plugin will be presented in Section \ref{high_lev_arch} along with the design rationale. This will be followed by an examination of the low-level architecture of these components in Section \ref{low_lev_arch}. Finally the implementation details of the system will be discussed in Section \ref{impl}.
+This chapter of the report discusses the decisions made in designing and implementing the system for supporting the migration of software from a Parallax Propeller Activity Board to an Arduino (these will be referred to as the source and target respectively). The system is implemented as an Eclipse plugin to assist in usability. Firstly, the high-level architecture of the plugin will be presented in Section \ref{high_lev_arch} along with the design rationale. This will be followed by an examination of the low-level architecture and implementation of these components in Sections \ref{fritz_design} to \ref{parallax_design}.
 
 
 \section{High-Level Architecture} \label{high_lev_arch}
 \begin{figure}[h!]
-  \begin{center}
-    \includegraphics[width=0.8\linewidth]{graphics/high_level_overview.png}
-    \caption{A high-level overview of the system.}
-  \end{center}
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/high_level_overview.png}
+  \caption{A high-level overview of the system.}
   \label{fig:high_level_overview}
 \end{figure}
 
-Figure \ref{fig:high_level_overview} shows the high-level architecture of the system. There are three main components to the system: Fritzing netlist analysis, Arduino libraries analysis and Parallax source code analysis. Each of these components produces information that contributes to code generation. The code generation is coordinated by an EGL transformation that takes the information from these components and generates a C file as output. This file acts as a basis for code that is compatible with the target platform. The components 
-
-Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pins 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. 
+\subsection{Description}
+Figure \ref{fig:high_level_overview} shows the high-level architecture of the system. There are three main components to the system: Fritzing netlist analysis, Arduino libraries analysis and Parallax source code analysis. Each of these components produces information that contributes to code generation. The code generation is coordinated by an EGL transformation that takes the data from these components and generates a C file as output. This file acts as a basis for code that is compatible with the target platform. 
 
 \begin{figure}[h!]
   \centering
@@ -418,6 +422,8 @@ Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among
   \label{fig:fritz_graph}
 \end{figure}
 
+Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transform and used to generate pin variables in the output file. %TODO: add example diagram
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\linewidth]{graphics/fritzing_netlist.png}
@@ -425,8 +431,16 @@ Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among
   \label{fig:fritz_net}
 \end{figure}
 
-\section{Low-Level Architecture} \label{low_lev_arch}
-\subsection{Fritzing Netlist Analysis}
+The goal of the Arduino libraries analysis component is to aid in mapping between source and target platform libraries. This is acheived by suggesting to the user suitable target platform libraries for the parts in the Fritzing netlist. Analysis is performed based on these parts and the Arduino header files to propose suitable libraries. Additionally, chosen libraries are recorded in the config. file and this is used to inform the suggestions when the system is run subsequently. The libraries chosen by the user are passed to the Code Generation EGL transform and used to add suitable include statements to the output file. %TODO: add example diagram
+
+Finally, the goal of the Parallax source analysis component is to take the code for the source platform and modify it to make it suitable for the target platform and indicate any areas of the code that need manual modification. Source-platform-dependent constructs are identified during the analysis and this information is passed to the Code Generation EGL transform. Code that does not need modification is passed as is. For example, the method signatures of source platform library function calls are identified in the analysis. These signatures are then used to generate empty method stubs in the output file with TODO directives indicating these need to be manually replaced.  %TODO: add example diagram
+
+\subsection{Design Rationale}
+Based on the requirements and stakeholders outlined in Chapter \ref{reqs}, reusability and modifiability were identified as the key quality attributes for the system. Based on the potential usage of Software Obsolescence Researchers, it is important that the system exhibits reusability so that successful components of the system are able to be used easily within other projects. As such, the system was designed to have loose coupling between components, in particular the three main components shown in Figure \ref{fig:high_level_overview}. This diagram clearly shows each of these elements works independently of the others and so could easily be reused. 
+
+It is also crucial that the system displays a high degree of modifiability to support requirement S-2: ``\textit{Users can easily adapt the system to support migration of software between different microprocessors.}''. This is again supported by loose coupling between components. Another decision to support modifiability was to use a configuration file as input to the components analysing the Fritzing netlist and Arduino libraries. This file contains information that could have been hardcoded into each component. However, using a configuration file allows this to be easily replaced for supporting migration between different platforms.
+
+\section{Fritzing Netlist Analysis} \label{fritz_design}
 \begin{figure}[h!]
 \captionsetup{justification=centering}
   \begin{center}
@@ -435,9 +449,19 @@ Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among
   \end{center}
   \label{fig:fritzing_analysis}
 \end{figure}
+
+\subsection{Design}
+The Fritzing netlist analysis component first consists of an XML to model transform to extract the key information from the netlist. EOL queries are applied to this model to extract the connections from the parts to the target board. The Code Generation transform uses these queries in generating the pin variables for the output.
+
+Although the netlist could be queried directly, the resulting model contains the information in a format making the queries easier to write as well as combining information from the config. file. This adds extra processing time but based on the requirements, reusability is of higher concern than performance in this case.
+
+Simlarly, the output model from the transform could have been queried directly from the Code Generation EGL transform rather than having a separate EOL file to perform the queries. However, separating out the queries makes the logic in the EGL transform simpler as well as helping decouple the code generation from the implementation of the model/the query logic. This improves the modifiability and reusability of this component.
+% TODO: finish design section for fritzing analysis
+
+\subsection{Implementation}
 // TODO
 
-\subsection{Arduino Library Analysis}
+\section{Arduino Library Analysis}
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=0.8\linewidth]{graphics/arduino_library_analysis.png}
@@ -445,9 +469,13 @@ Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among
   \end{center}
   \label{fig:arduino_analysis}
 \end{figure}
+
+\subsection{Design}
+// TODO
+\subsection{Implementation}
 // TODO
 
-\subsection{Parallax Project Analysis}
+\section{Parallax Project Analysis} \label{parallax_design}
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=0.8\linewidth]{graphics/parallax_project_analysis.png}
@@ -455,9 +483,10 @@ Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among
   \end{center}
   \label{fig:parallax_analysis}
 \end{figure}
-// TODO
 
-\section{Implementation} \label{impl}
+\subsection{Design}
+// TODO
+\subsection{Implementation}
 // TODO
 
 \chapter{Evaluation}
