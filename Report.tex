@@ -414,7 +414,7 @@ This chapter of the report discusses the decisions made in designing and impleme
   \label{fig:high_level_overview}
 \end{figure}
 
-\subsection{Description}
+\subsection{Overview}
 Figure \ref{fig:high_level_overview} shows the high-level architecture of the system. There are three main components to the system: Fritzing netlist analysis, Arduino libraries analysis and Parallax source code analysis. Each of these components produces information that contributes to code generation. The code generation is coordinated by an EGL transformation that takes the data from these components and generates a C file as output. This file acts as a basis for code that is compatible with the target platform. 
 
 \begin{figure}[h!]
@@ -424,7 +424,7 @@ Figure \ref{fig:high_level_overview} shows the high-level architecture of the sy
   \label{fig:fritz_graph}
 \end{figure}
 
-Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transform and used to generate pin variables in the output file. %TODO: add example diagram
+Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transform and used to generate pin variables in the output file.
 
 \begin{figure}[h!]
   \centering
@@ -433,9 +433,9 @@ Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among
   \label{fig:fritz_net}
 \end{figure}
 
-The goal of the Arduino libraries analysis component is to aid in mapping between source and target platform libraries. This is acheived by suggesting to the user suitable target platform libraries for the parts in the Fritzing netlist. Analysis is performed based on these parts and the Arduino header files to propose suitable libraries. Additionally, chosen libraries are recorded in the config. file and this is used to inform the suggestions when the system is run subsequently. The libraries chosen by the user are passed to the Code Generation EGL transform and used to add suitable include statements to the output file. %TODO: add example diagram
+The goal of the Arduino libraries analysis component is to aid in mapping between source and target platform libraries. This is acheived by suggesting to the user suitable target platform libraries for the parts in the Fritzing netlist. Analysis is performed based on these parts and the Arduino header files to propose suitable libraries. Additionally, chosen libraries are recorded in the config. file and this is used to inform the suggestions when the system is run subsequently. The libraries chosen by the user are passed to the Code Generation EGL transform and used to add suitable include statements to the output file.
 
-Finally, the goal of the Parallax source analysis component is to take the code for the source platform and modify it to make it suitable for the target platform and indicate any areas of the code that need manual modification. Source-platform-dependent constructs are identified during the analysis and this information is passed to the Code Generation EGL transform. Code that does not need modification is passed as is. For example, the method signatures of source platform library function calls are identified in the analysis. These signatures are then used to generate empty method stubs in the output file with TODO directives indicating these need to be manually replaced.  %TODO: add example diagram
+Finally, the goal of the Parallax source analysis component is to take the code for the source platform and modify it to make it suitable for the target platform and indicate any areas of the code that need manual modification. Source-platform-dependent constructs are identified during the analysis and this information is passed to the Code Generation EGL transform. Code that does not need modification is passed as is. For example, the method signatures of source platform library function calls are identified in the analysis. These signatures are then used to generate empty method stubs in the output file with TODO directives indicating these need to be manually replaced.
 
 \subsection{Design Rationale}
 Based on the requirements and stakeholders outlined in Chapter \ref{reqs}, reusability and modifiability were identified as the key quality attributes for the system. Based on the potential usage of Software Obsolescence Researchers, it is important that the system exhibits reusability so that successful components of the system are able to be used easily within other projects. As such, the system was designed to have loose coupling between components, in particular the three main components shown in Figure \ref{fig:high_level_overview}. This diagram clearly shows each of these elements works independently of the others and so could easily be reused. 
@@ -444,20 +444,18 @@ It is also crucial that the system displays a high degree of modifiability to su
 
 \section{Fritzing Netlist Analysis} \label{fritz_design}
 \begin{figure}[h!]
-\captionsetup{justification=centering}
-  \begin{center}
-    \includegraphics[width=0.8\linewidth]{graphics/fritzing_analysis.png}
-    \caption{A more detailed view of the Fritzing netlist analysis component of the system.}
-  \end{center}
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/fritzing_analysis.png}
+  \caption{A more detailed view of the Fritzing netlist analysis component of the system.}
   \label{fig:fritzing_analysis}
 \end{figure}
 
 \subsection{Design}
-The Fritzing netlist analysis component first consists of an XML to model transform to extract the key information from the netlist. EOL queries are applied to this model to extract the connections from the parts to the target board. The Code Generation transform uses these queries in generating the pin variables for the output.
+The Fritzing netlist analysis component first consists of an XML to model transformation to extract the key information from the netlist. EOL queries are applied to this model to extract the connections from the parts to the target board. The Code Generation transform uses these queries in generating the pin variables for the output.
 
-Although the netlist could be queried directly, the resulting model contains the information in a format making the queries easier to write as well as combining information from the config. file. This adds extra processing time but based on the requirements, reusability is of higher concern than performance in this case.
+Although the netlist could be queried directly, the resulting model contains the information in a format making the queries easier to write as well as combining information from the config. file. This adds extra processing time but makes the code easier to understand which is more important given the requirements for the system.
 
-Simlarly, the output model from the transform could have been queried directly from the Code Generation EGL transform rather than having a separate EOL file to perform the queries. However, separating out the queries makes the logic in the EGL transform simpler as well as helping decouple the code generation from the implementation of the model/the query logic. This improves the modifiability and reusability of this component.
+Similarly, the output model from the transform could have been queried directly from the Code Generation EGL transform rather than having a separate EOL file to perform the queries. However, separating out the queries makes the logic in the EGL transform simpler as well as helping decouple the code generation from the implementation of the model/query logic. This improves the modifiability and reusability of this component.
 
 \subsection{Implementation}
 
@@ -468,13 +466,17 @@ Simlarly, the output model from the transform could have been queried directly f
   \label{fig:fritz_metamodel}
 \end{figure}
 
+\subsubsection{Model Transform and Metamodel Design}
+Figure \ref{fig:fritz_metamodel} shows the format for the Fritzing metamodel shown in Figure \ref{fig:fritzing_analysis}. The metamodel captures the essential information required to resolve the connections from parts to the Arduino board. Models conforming to this metamodel represent the circuit as a graph where nodes are parts and edges represent connections between the connectors of these parts. A graphical example of a model for the circuit in Figure \ref{fig:fritz_graph} is shown in Figure \ref{fig:fritz_model}.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.6\linewidth]{graphics/fritz_model.png}
   \caption{A graphical representation of the model conforming to the metamodel shown in Figure \ref{fig:fritz_metamodel} for the circuit shown in Figure \ref{fig:fritz_graph}.}
   \label{fig:fritz_model}
 \end{figure}
-% TODO: finish fritz impl
+
+Most of the information for instantiating these models is extracted directly from the netlist. However, additional information about the type of parts is required. For example, when creating the pin variables in the output, we only want to generate values for devices read/written by the Arduino such as LEDs or potentiometers. Other parts, such as resistors, should not have pin variables generated. The config file (an example can be seen in Figure \ref{fig:config}) contains mappings between Fritzing part names and the type of the part. The part type is used to indicate whether or not variables should be generated for this component in the output file. This type information is stored as an attribute of the Part class in the model and is taken into account by the queries used to generate pin variables.
 
 \begin{figure}[h!]
   \centering
@@ -483,6 +485,12 @@ Simlarly, the output model from the transform could have been queried directly f
   \label{fig:config}
 \end{figure}
 
+\subsubsection{Pin Generation Queries}
+To find out which pins of the board parts in the circuit are connected to, a modified breadth-first search is performed on the Fritzing model. For each of the I/O connectors on the board, the connections in the model are followed until an input/output part is found. For example, resolving the connection to digital pin 13 (D13) in Figure \ref{fig:fritz_model} follows the connection to pin 0 of the 220$\Omega$ resistor, sees that this not an input/output part so follows the outgoing connections from this component (i.e. pin 1) to the anode of the LED. As this is a part tagged as an output type, a variable is then generated associating the LED with pin 13 on the Arduino board.
+
+% TODO: test assumption about only one component to each pin/
+% TODO: include pseudocode for resolving pin connections
+% TODO: complete pin generation queries section
 
 \section{Arduino Library Analysis}
 \begin{figure}[h!]
@@ -493,9 +501,21 @@ Simlarly, the output model from the transform could have been queried directly f
 \end{figure}
 
 \subsection{Design}
-// TODO
+The Arduino Library Analysis component is used to suggest target platform libraries for each part in the Fritzing netlist. There are two methods used for library suggestion:
+\begin{description}
+\item[Library Ranker:] This treats library suggestion as an information retrieval task based on the part name. In other words, the Arduino libraries' header files are ranked based on similarity to the part's name. This makes the assumption that the most suitable library for a part will make some reference or include similar terms to the part's name. %TODO: add limitations e.g. fritzing names are not always intelligible/no guarantee against clashes; intended to be a heuristic not a solution
+\item[Config:] %TODO next
+\end{description}
+
+As these sub-components are logically independent, they have been separated to improve modifiability and reusability. Furthermore, the use of the config handler between the library selection UI and the config file abstracts away from the format of this file. This makes it easier to modify this subcomponent. For example, changing the format of the config file will not require a change in the library selectio UI.
+% TODO: talk about how eol file not needed here
+% TODO: add diagram of user library selection
+% TODO: finish design section
 \subsection{Implementation}
-// TODO
+\subsubsection{Library Ranker}
+%TODO
+\subsubsection{Config}
+%TODO
 
 \section{Parallax Project Analysis} \label{parallax_design}
 \begin{figure}[h!]
