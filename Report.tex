@@ -7,8 +7,13 @@
 \usepackage{caption}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 \addbibresource{references.bib}
 \author{Sophie Wood}
@@ -486,11 +491,25 @@ Most of the information for instantiating these models is extracted directly fro
 \end{figure}
 
 \subsubsection{Pin Generation Queries}
-To find out which pins of the board parts in the circuit are connected to, a modified breadth-first search is performed on the Fritzing model. For each of the I/O connectors on the board, the connections in the model are followed until an input/output part is found. For example, resolving the connection to digital pin 13 (D13) in Figure \ref{fig:fritz_model} follows the connection to pin 0 of the 220$\Omega$ resistor, sees that this not an input/output part so follows the outgoing connections from this component (i.e. pin 1) to the anode of the LED. As this is a part tagged as an output type, a variable is then generated associating the LED with pin 13 on the Arduino board.
+To find out which pins of the board parts in the circuit are connected to, a modified breadth-first search is performed on the Fritzing model. For each of the I/O connectors on the board, the connections in the model are followed until an input/output part is found. For example, resolving the connection to digital pin 13 (D13) in Figure \ref{fig:fritz_model} follows the connection to pin 0 of the 220$\Omega$ resistor, sees that this not an input/output part so follows the outgoing connections from this component (i.e. pin 1) to the anode of the LED. As this is a part tagged as an output type, a variable is then generated associating the LED with pin 13 on the Arduino board. The pseudocode below demonstrates the algorithm used for resolving the connections from the board to the input/output parts.
 
+\begin{algorithm}
+\begin{algorithmic}[1]
+\Procedure{resolveBoardConnections}{}
+\For{$connector$ in $board.connectors$} 
+\State $connectedSensor \leftarrow bfsResolveConnections(connector)$
+\State $connections.put(connector, connectedSensor)$
+\EndFor
+\Return $connections$
+\\
+\EndProcedure
+\Procedure{bfsResolveConnections}{}
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 % TODO: test assumption about only one component to each pin/
 % TODO: include pseudocode for resolving pin connections
-% TODO: complete pin generation queries section
 
 \section{Arduino Library Analysis}
 \begin{figure}[h!]
@@ -503,15 +522,16 @@ To find out which pins of the board parts in the circuit are connected to, a mod
 \subsection{Design}
 The Arduino Library Analysis component is used to suggest target platform libraries for each part in the Fritzing netlist. There are two methods used for library suggestion:
 \begin{description}
-\item[Library Ranker:] This treats library suggestion as an information retrieval task based on the part name. In other words, the Arduino libraries' header files are ranked based on similarity to the part's name. This makes the assumption that the most suitable library for a part will make some reference or include similar terms to the part's name. %TODO: add limitations e.g. fritzing names are not always intelligible/no guarantee against clashes; intended to be a heuristic not a solution
-\item[Config:] %TODO next
+\item[Library Ranker:] This treats library suggestion as an information retrieval task based on the part name. In other words, the Arduino libraries' header files are ranked based on similarity to the part's name. This makes the assumption that the most suitable library for a part will make some reference or include similar terms to the part's name. 
+\item[Config:] The config. file stores information about the previously used libraries for a given part. For example, Figure \ref{fig:config} shows that the library "DHT.h" has been chosen twice for the humidity and temperature sensor. Whenever a library is chosen for a given part, the config file is updated with this choice.
 \end{description}
 
-As these sub-components are logically independent, they have been separated to improve modifiability and reusability. Furthermore, the use of the config handler between the library selection UI and the config file abstracts away from the format of this file. This makes it easier to modify this subcomponent. For example, changing the format of the config file will not require a change in the library selectio UI.
-% TODO: talk about how eol file not needed here
-% TODO: add diagram of user library selection
-% TODO: finish design section
+The Library Selection UI combines the library suggestions and displays them to the user. Once the choices have been made, it also coordinates the update of the config file and passes on the library choices to the Code Generation EGL transform. As the only information passed to the Code Generation transform is a list of libraries, there is no separate EOL file used in this component unlike in the Fritzing netlist analysis component (e.g. the Pin Gen. Queries in Figure \ref{fig:fritzing_analysis}).
+
+As these library suggestion sub-components are logically independent, they have been separated to improve modifiability and reusability. Furthermore, the use of the config handler between the library selection UI and the config file abstracts away from the format of this file. This makes it easier to modify this subcomponent. For example, changing the format of the config file will not require a change in the library selection UI.
+
 \subsection{Implementation}
+% TODO: add diagram of user library selection
 \subsubsection{Library Ranker}
 %TODO
 \subsubsection{Config}
@@ -529,6 +549,10 @@ As these sub-components are logically independent, they have been separated to i
 // TODO
 \subsection{Implementation}
 // TODO
+
+\section{Limitations}
+%TODO: limitations on LibraryRanker e.g. fritzing names are not always intelligible/no guarantee against clashes; intended to be a heuristic not a solution
+
 
 \chapter{Evaluation}
 %TODO
