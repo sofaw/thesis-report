@@ -14,6 +14,7 @@
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
 
 \addbibresource{references.bib}
 \author{Sophie Wood}
@@ -522,8 +523,8 @@ To find out which pins of the board parts in the circuit are connected to, a mod
 \subsection{Design}
 The Arduino Library Analysis component is used to suggest target platform libraries for each part in the Fritzing netlist. There are two methods used for library suggestion:
 \begin{description}
-\item[Library Ranker:] This treats library suggestion as an information retrieval task based on the part name. In other words, the Arduino libraries' header files are ranked based on similarity to the part's name. This makes the assumption that the most suitable library for a part will make some reference or include similar terms to the part's name. 
-\item[Config:] The config. file stores information about the previously used libraries for a given part. For example, Figure \ref{fig:config} shows that the library "DHT.h" has been chosen twice for the humidity and temperature sensor. Whenever a library is chosen for a given part, the config file is updated with this choice.
+\item[Library Ranker:] For each part, the Library Ranker component calculates a ranking for the suitability of each Arduino library (discussed in more detail in Section \ref{lib_ranker}).
+\item[Config:] The config. file stores information about the previously used libraries for a given part. Whenever a library is chosen for a given part, the config file is updated with this choice. 
 \end{description}
 
 The Library Selection UI combines the library suggestions and displays them to the user. Once the choices have been made, it also coordinates the update of the config file and passes on the library choices to the Code Generation EGL transform. As the only information passed to the Code Generation transform is a list of libraries, there is no separate EOL file used in this component unlike in the Fritzing netlist analysis component (e.g. the Pin Gen. Queries in Figure \ref{fig:fritzing_analysis}).
@@ -531,11 +532,37 @@ The Library Selection UI combines the library suggestions and displays them to t
 As these library suggestion sub-components are logically independent, they have been separated to improve modifiability and reusability. Furthermore, the use of the config handler between the library selection UI and the config file abstracts away from the format of this file. This makes it easier to modify this subcomponent. For example, changing the format of the config file will not require a change in the library selection UI.
 
 \subsection{Implementation}
-% TODO: add diagram of user library selection
-\subsubsection{Library Ranker}
-%TODO
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/lib_selection_ui.png}
+  \caption{How the library suggestions are displayed to the user.}
+  \label{fig:lib_selection_ui}
+\end{figure}
+
+Figure \ref{fig:lib_selection_ui} demonstrates how the library suggestions are displayed to the user. For each part in the netlist, a scrollable checklist allows users to select the appropriate library. The libraries are displayed based on the ranking provided by the Library Ranker component. The highlighted libraries are those that have previously been chosen for that part (as recorded by the config file).
+
+\subsubsection{Library Ranker} \label{lib_ranker}
+Given a part name and the Arduino library header files, the Library Ranker component calculates a ranking for the suitability of each library. The ranking is treated as an information retrieval task based on the part name. In other words, the Arduino libraries' header files are ranked based on similarity to the part's name. This makes the assumption that the most suitable library for a part will make some reference or include similar terms to the part's name. Although this is not intended to be an exact recommendation, it provides a useful heuristic for library suggestion.
+
+For each library, the term frequency-inverse document frequency (\textbf{TFIDF}) value is calculated based on the part name. 
+
+\textbf{TFIDF} is defined as:
+\begin{equation}
+w_{t,d} = \big(1 + log(tf_{f,d})\big) \times log\bigg(\frac{N}{df_t}\bigg)
+\end{equation}
+
+where:\\
+\tab$df_t$ is the number of documents term $t$ occurs in\\
+\tab$N$ is the number of documents in the collection\\
+\tab$tf_{t,d}$ is the number of occurrences of term $t$ in document $d$\\
+\\
+In this case a document corresponds to a header file and a term corresponds to a word in the part name. The total ranking for a library is calculated by summing the \textbf{TFIDF} score for each term in the part name.
+\textbf{TFIDF} was chosen as the ranking metric as it takes into account both the frequency of occurrence of a term in the library as well as its ``informativeness''. That is, a term is more informative if it appears in fewer documents of the collection (``informativeness'' effectively corresponds to the $log\Big(\frac{N}{df_t}\Big)$ term in the \textbf{TFIDF} equation). For example, if we consider the part \textit{humidity and temperature sensor} the term \textit{sensor} is less informative than \textit{humidity} as many parts have the term \textit{sensor} in the title and so will many header files. If we don't take the ``informativeness'' into account, any part that contains \textit{sensor} in the title is likely to rank highest the header file with the most occurrences of \textit{sensor} in the text, regardless of the type of sensor. Since \textit{humidity} is a less common term, using the \textbf{TFIDF} ranking will instead rank header files containing the less frequently occurring term \textit{humidity} higher.
+
 \subsubsection{Config}
-%TODO
+The config file stores the name of libraries chosen for each part as well as the number of times it has been chosen. For example, Figure \ref{fig:config} shows that the library "DHT.h" has been chosen twice for the humidity and temperature sensor.
+% TODO: finish config impl section - talk about choice of shared file with fritzing analysis
 
 \section{Parallax Project Analysis} \label{parallax_design}
 \begin{figure}[h!]
