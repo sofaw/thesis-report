@@ -110,8 +110,11 @@ The company Sodifrance has successfully been using MDE for development and migra
 \begin{enumerate}
 \item Firstly, the code of the legacy application is parsed in order to create a model of the legacy system. In Figure \ref{fig:sodifrance_process}, \textit{L} indicates the metamodel for the implementation language of the legacy code.
 \item This model is then transformed to a Platform Independent Model (PIM) conforming to an ANT metamodel\footnote{An ANT metamodel contains packages to represent:
-\begin{itemize}\item Static data structures (close to the UML class diagram).\item Actions and algorithms (it includes an imperative action language).
-\item Graphical user interfaces and widgets.\item Application navigation.
+\begin{itemize}
+\item Static data structures (close to the UML class diagram).
+\item Actions and algorithms (it includes an imperative action language).
+\item Graphical user interfaces and widgets.
+\item Application navigation.
 \end{itemize}}. This model represents a high-level view of the legacy code. This process is dependent on knowledge of the libraries and coding conventions used by the legacy platform.
 \item Next the PIM has a model transformation applied to produce a Platform Specific Model (PSM) conforming to a UML metamodel. The high-level views from the PIM are adapted to fit the target platform.
 \item Finally, code is generated from the PSM by using template-based text generation tools.
@@ -495,8 +498,9 @@ Most of the information for instantiating these models is extracted directly fro
 To find out which pins of the board parts in the circuit are connected to, a modified breadth-first search is performed on the Fritzing model. For each of the I/O connectors on the board, the connections in the model are followed until an input/output part is found. For example, resolving the connection to digital pin 13 (D13) in Figure \ref{fig:fritz_model} follows the connection to pin 0 of the 220$\Omega$ resistor, sees that this not an input/output part so follows the outgoing connections from this component (i.e. pin 1) to the anode of the LED. As this is a part tagged as an output type, a variable is then generated associating the LED with pin 13 on the Arduino board. The pseudocode below demonstrates the algorithm used for resolving the connections from the board to the input/output parts.
 
 \begin{algorithm}
+\caption{Calculate mapping from each pin on the board to its connected sensor(s)}
 \begin{algorithmic}[1]
-\Procedure{resolveBoardConnections}{}
+\Procedure{resolveBoardConnections}{$board$}
 \For{$connector$ in $board.connectors$} 
 \State $connectedSensor \leftarrow bfsResolveConnections(connector)$
 \State $connections.put(connector, connectedSensor)$
@@ -504,13 +508,36 @@ To find out which pins of the board parts in the circuit are connected to, a mod
 \Return $connections$
 \\
 \EndProcedure
-\Procedure{bfsResolveConnections}{}
+\end{algorithmic}
+\end{algorithm}
 
+\begin{algorithm}
+\caption{Calculate set of connectors connected to $start$}
+\begin{algorithmic}[1]
+\Procedure{bfsResolveConnections}{$start$}
+\State $queue.add(start)$
+\While{\textbf{not} $queue.isEmpty()$}
+	\State{$con \leftarrow queue.removeFirst()$}
+	\If{\textbf{not} $visited.includes(con)$}
+		\State {$visited.add(con)$}
+		\State {$type \leftarrow con.parent.type$}
+
+		\If{$type == INPUT$ \textbf{or} $type == OUTPUT$}
+		\State{$connectors.add(con)$}
+		\Else
+			\State{$queue.add(con.connectedTo)$}
+			\If{\textbf{not} $type == BOARD$}
+				\For{$c$ in $con.parent.connectors$}
+					\State{$queue.add(c)$}
+				\EndFor
+			\EndIf
+		\EndIf
+	\EndIf
+\EndWhile
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-% TODO: test assumption about only one component to each pin/
-% TODO: include pseudocode for resolving pin connections
+% TODO: test assumption about only one component to each pin/ -> edit caption on first algorithm
 
 \section{Arduino Library Analysis}
 \begin{figure}[h!]
@@ -530,6 +557,8 @@ The Arduino Library Analysis component is used to suggest target platform librar
 The Library Selection UI combines the library suggestions and displays them to the user. Once the choices have been made, it also coordinates the update of the config file and passes on the library choices to the Code Generation EGL transform. As the only information passed to the Code Generation transform is a list of libraries, there is no separate EOL file used in this component unlike in the Fritzing netlist analysis component (e.g. the Pin Gen. Queries in Figure \ref{fig:fritzing_analysis}).
 
 As these library suggestion sub-components are logically independent, they have been separated to improve modifiability and reusability. Furthermore, the use of the config handler between the library selection UI and the config file abstracts away from the format of this file. This makes it easier to modify this subcomponent. For example, changing the format of the config file will not require a change in the library selection UI.
+
+The config file is shared with the Fritzing Netlist analysis component of the system. Although this increases coupling between the components, it prevents duplication of information and therefore seemed suitable in this case.
 
 \subsection{Implementation}
 
@@ -562,7 +591,6 @@ In this case a document corresponds to a header file and a term corresponds to a
 
 \subsubsection{Config}
 The config file stores the name of libraries chosen for each part as well as the number of times it has been chosen. For example, Figure \ref{fig:config} shows that the library "DHT.h" has been chosen twice for the humidity and temperature sensor.
-% TODO: finish config impl section - talk about choice of shared file with fritzing analysis
 
 \section{Parallax Project Analysis} \label{parallax_design}
 \begin{figure}[h!]
@@ -573,15 +601,72 @@ The config file stores the name of libraries chosen for each part as well as the
 \end{figure}
 
 \subsection{Design}
-// TODO
+For a similar reason as in the Fritzing netlist analysis component, the information extracted in the Parallax project analysis stage is coordinated by an EOL file that is used by the Code Generation EGL transform. 
+
+The logic contained in the Parallax Dependency Resolver Java code could have been implemented in the Parallax Queries EOL file. However, it would have been much more difficult to write. As such, a Java class encapsulating the required logic was created. This class is added to a plugin setup as in \parencite{eol_tool} so that it can be accessed from EOL as a Native type.
+
+The Eclipse CDT Project provides a fully functional C and C++ Integrated Development Environment based on the Eclipse platform \parencite{eclipse_cdt}. The CDT Driver extends the Eclipse CDT Project, adding C/C++ support to the Epsilon framework (e.g. by providing support for C/C++ models) \parencite{cdt_driver}. These projects are used to support the analysis of the Parallax project.
+
 \subsection{Implementation}
-// TODO
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/ast_diagram.png}
+  \caption{An example of a partially expanded AST for Parallax source code.}
+  \label{fig:ast_diagram}
+\end{figure}
+
+CDT contains two parsers, for C and C++, which are able to generate an abstract syntax tree (AST) from source code \parencite{cdt_parsing}. Figure \ref{fig:ast_diagram} shows a partially expanded AST (more information on the structure of the AST can be found at \parencite{ast_structure}). The AST is generated for the input Parallax project and this is analysed to determine which constructs are part of Parallax libraries. These are then annotated in the generated code so that they can easily be replaced with equivalent functionality from the Arduino libraries. For example, functions from Parallax libraries are replaced with empty methods in the output file of the system. TODO directives within these empty methods make it clear they should be manually implemented. Figure \ref{fig:gen_stub} shows an example of a generated method.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/generated_method_stub.png}
+  \caption{An example of the empty method generated from a Parallax library function.}
+  \label{fig:gen_stub}
+\end{figure}
+
+The constructs from Parallax libraries are identified as follows. The ParallaxDependencyResolver class extends the ASTVisitor class. This class implements the visitor design pattern and is the recommended method for traversing the AST based on \parencite{cdt_parsing}. This class is used to visit each $IASTNode$ in the AST (each construct in Figure \ref{fig:ast_diagram} is an $IASTNode$) and determine whether it belongs to a Parallax library. To determine whether a node  is declared/defined in within a Parallax library the following analysis is performed:
+\begin{enumerate}
+\item The index is created for the project. This contains all the binding information for the project. Since creating the index is a time-consuming process requiring parsing all the project code, resolving the bindings and writing them to the index, the index is only created once.
+\item The $resolveBinding$ method is called on the $IASTName$ of the node. This returns an $IBinding$ instance.
+\item The $IBinding$ is used to look up the $IIndexName$ for any declaration/definition of the node in the index.
+\item The origin file can be found for this $IIndexName$. The file location is checked to see if it is contained within the directories containing the Parallax libraries. If so, it can be concluded that this node is part of a Parallax library and must be replaced in the output code.
+\item If the node is determined to be part of the Parallax libraries, the declaration/definition of the node is collected.
+\end{enumerate}
+
+Once all the nodes have been processed, there will be a list of all the declarations/definitions that must be replaced in the output code. These are passed to the Code Generation EGL transform to create e.g. empty method stubs. Any other code is passed as is to the Code Generation EGL transform as is.
 
 \section{Limitations}
-%TODO: limitations on LibraryRanker e.g. fritzing names are not always intelligible/no guarantee against clashes; intended to be a heuristic not a solution
+This project is intended to be a proof-of-concept rather than a perfect implementation. As such, there are a few limitations in the approach which will be discussed below.
 
+One of the main limitations of the system is the LibraryRanker for suggesting suitable Arduino libraries. Firstly, there's no guarantee that the Fritzing part names will actually be useful in searching for suitable libraries. For example, in Figure \ref{fig:lib_selection_ui} the name of the first part is shown as ``TSOP312.., 314..'' (this is actually an infrared receiver) - this doesn't give any indication of what the part is for and is unlikely to appear in any libraries as method names or in comments. Therefore, the suggestions for this part will be poor. However, it does provide a useful heuristic and creating a more accurate library suggestion system could easily be another project in itself and would therefore be infeasible in the time frame.
+
+Another limitation is the assumption that the netlist input to the system is valid. For example, that the provided netlist is for a valid circuit and that it matches the configuration of the board that the generated code is intended to run on. As there is no easy way to check the correctness of this input, this is again outside the scope of the project.
+
+% TODO: assumption that there IS a mapping between libraries
+
+%TODO: pin generation queries doesn't handle case where >1 sensor is connected to a board pin; config information has not been provided for all components in Fritzing due to time constraints
+
+%TODO: would be easy to replace config w. hardcoded mapping between libs; no guarantee that previous library choices are reliable; no indication of how many times a library has previously been chosen;
+
+% TODO: no backup for config file
 
 \chapter{Evaluation}
+% TODO: add intro.
+\section{Test Plan}
+The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced.
+
+
+To evaluate the software migration system will involve the use of case studies at differing levels of complexity.
+% test plan: defines the software under test and the testing strategy
+	% test using case studies
+	% test 3 main components for correctness
+	% test overall system
+% specification of system tests - ensure that the system does what it was designed to do; done by developers
+	% Numbered list of tests i.e. preconditions; input; expected behaviour; description; ex. had 7 tests
+% System Acceptance Testing Results - go through requirements and say if they're met
+% Summary of current issues
+% Test summary
+% Limitations: four types of validity threats that are used to state the limitations a software experiment: internal, external, construct, and conclusion.
 %TODO
 
 \chapter{Conclusion}
