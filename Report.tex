@@ -10,11 +10,19 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{xparse}
+\usepackage{amssymb}
+\usepackage{pdflscape}
+\usepackage{longtable}
+\usepackage{geometry}
 
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \newcommand\tab[1][1cm]{\hspace*{#1}}
+\NewDocumentCommand{\codeword}{v}{%
+\texttt{{#1}}%
+}
 
 \addbibresource{references.bib}
 \author{Sophie Wood}
@@ -642,10 +650,13 @@ One of the main limitations of the system is the LibraryRanker for suggesting su
 
 Another limitation is the assumption that the netlist input to the system is valid. For example, that the provided netlist is for a valid circuit and that it matches the configuration of the board that the generated code is intended to run on. As there is no easy way to check the correctness of this input, this is again outside the scope of the project.
 
+A further limitation with the Fritzing netlist analysis component is that there is no mapping between pin variables declared in the source code and the variables generated for the target platform. For example, suppose the source code contains a variable \codeword{int humidityPin = 12} which is used in various method calls for accessing a humidity sensor. The Fritzing netlist analysis component generates a variable \codeword{int humidityPinGenerated = 6} which needs to replace \codeword{humidityPin}. There is currently no mechanism for automating this mapping and so pin variables will have to be replaced manually.
+
+Additionally, due to time limitations the config file used for the Fritzing netlist analysis component does not contain information for all the components available in Fritzing. However, it would be fairly easy (albeit time-consuming) to update this with a more comprehensive file.
+
 % TODO: assumption that there IS a mapping between libraries
 
-%TODO: pin generation queries doesn't handle case where >1 sensor is connected to a board pin; config information has not been provided for all components in Fritzing due to time constraints
-
+%TODO: pin generation queries doesn't handle case where >1 sensor is connected to a board pin;
 %TODO: would be easy to replace config w. hardcoded mapping between libs; no guarantee that previous library choices are reliable; no indication of how many times a library has previously been chosen;
 
 % TODO: no backup for config file
@@ -654,7 +665,6 @@ Another limitation is the assumption that the netlist input to the system is val
 % TODO: add intro.
 \section{Test Plan}
 The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced.
-
 
 To evaluate the software migration system will involve the use of case studies at differing levels of complexity.
 % test plan: defines the software under test and the testing strategy
@@ -669,6 +679,46 @@ To evaluate the software migration system will involve the use of case studies a
 % Limitations: four types of validity threats that are used to state the limitations a software experiment: internal, external, construct, and conclusion.
 %TODO
 
+\section{Case Study}
+\begin{table*}[h!]\centering
+\ra{1.3}
+  \begin{tabular}{@{}p{0.1\textwidth}p{0.15\textwidth}p{0.3\textwidth}p{0.15\textwidth}p{0.3\textwidth}@{}} \toprule 
+  \textbf{ID} & \textbf{Priority} & \textbf{Description} & \textbf{Satisfied} & \textbf{Comments} \\
+  \midrule
+  S-1 & M & Users can provide the system with the source code for a Parallax Propeller Activity Board and target code for the Arduino Uno will be generated. & \checkmark & - \\ 
+  S-2 & M & Users can easily adapt the system to support migration of software between different microprocessors. & - & - \\
+  S-3 & S & Users can easily determine sources of errors when using the system. & - & - \\
+  S-4 & S & Users can easily identify areas of the target code that cannot automatically be migrated and must be manually completed. & - & - \\
+  S-5 & S & The performance of the migrated code is not significantly worse than the source application. & - & - \\
+  \bottomrule
+  \end{tabular}
+\caption{Case Study System Test Results}
+\label{table:case_study_sys_test_results}
+\end{table*}
+
+\newgeometry{left=2cm,bottom=2cm, top=3cm, right=2cm, footskip=0.2cm}
+\begin{landscape}
+\ra{1.3}
+  \begin{longtable}{@{}p{0.06\textwidth}p{0.05\textwidth}p{0.3\textwidth}p{0.3\textwidth}p{0.05\textwidth}p{0.24\textwidth}@{}} \toprule 
+  \textbf{ID} & \textbf{P} & \textbf{Description} & \textbf{Acceptance Criteria} &\textbf{S} & \textbf{Comments} \\
+  \midrule
+      F-1 & M & The target microcontoller running the migrated code (potentially with manual additions) displays the same behaviour as the source microcontroller, provided the source code is valid. & Manual inspection of the migrated application confirms the behaviour is the same as the source application. & - & - \\
+  F-2 & M & The migrated code deploys without errors on the target microcontroller if the provided source code is valid. & Manual inspection of the migration process confirms a valid source application can be migrated without errors. & - & - \\
+  F-3 & S & The system displays appropriate errors when the source code cannot be migrated (e.g. there are errors in the source code or hardware incompatibilities). & Errors are thrown when invalid source code is provided to the migration process. & - & - \\  
+  F-4 & S & The system clearly indicates any errors that have occurred during its use (e.g. the migration process fails). & Errors are thrown if the migration process fails. The errors clearly indicate the source of the problem. & - & - \\
+  F-5 & S & The system should indicate any parts of the code that must be manually completed. & Manual inspection of the migrated code confirms that all parts of the code that must be manually completed are clearly indicated (e.g. by TODO directives). & - & - \\
+    NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. & - & - \\
+  NF-2 & S & The system should display a high-level of encapsulation. & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. & - & - \\
+  NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is of a size acceptable to the stakeholder. & - & - \\
+  NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. & - & - \\
+    \bottomrule
+
+\caption{Case Study Functionl/Non-Functional Test Results}
+\label{table:case_study_func_test_results}
+  \end{longtable}
+\end{landscape}
+
+\restoregeometry
 \chapter{Conclusion}
 %TODO
 %TODO discuss effort of testing
