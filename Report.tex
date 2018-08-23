@@ -15,6 +15,9 @@
 \usepackage{pdflscape}
 \usepackage{longtable}
 \usepackage{geometry}
+\usepackage[toc,page]{appendix}
+\usepackage{subcaption}
+\usepackage{pdfpages}
 
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -666,7 +669,7 @@ Additionally, due to time limitations the config file used for the Fritzing netl
 \section{Test Plan}
 The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced.
 
-To evaluate the software migration system will involve the use of case studies at differing levels of complexity.
+Evaluation of the software migration system will take the form of case studies at differing levels of complexity.
 % test plan: defines the software under test and the testing strategy
 	% test using case studies
 	% test 3 main components for correctness
@@ -679,10 +682,30 @@ To evaluate the software migration system will involve the use of case studies a
 % Limitations: four types of validity threats that are used to state the limitations a software experiment: internal, external, construct, and conclusion.
 %TODO
 
-\section{Case Study}
+\section{Case Studies}
+
+\subsection{Case Study 1 (CS-1)}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\linewidth]{graphics/ir_humidity_sensors.png}
+  \caption{Fritzing diagram for CS-1.}
+  \label{fig:cs1}
+\end{figure}
+
+Figure \ref{fig:cs1} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{cs1_in}, \ref{cs1_netlist} and \ref{cs1_out} respectively.
+
+\subsubsection{Description}
+The source code and circuit uses infrared receivers/LEDs to detect and move around its surroundings using servo motors. Periodically, a humidity reading is taken from the humidity/temperature sensor. If this is above some threshold, an LED lights up. When connected to a computer, the humidity and temperature readings can be displayed to the console. Since Parallax only supports a subset of C, in order to write to the console a function myPrintf is defined in the source code. This performs the same function as the standard libraries' printf.
+
+This case study is used to demonstrate the migration of code for components that require different complexities of mapping between the source and target platforms. Firstly, mapping betweenuse of two functionalities that require the use of platform libraries: the servo motors and a humidity/temperature sensor. 
+%TODO: description of why this case study chosen
+%TODO: analysis of migration
+%TODO: add results in table
+%TODO: add intro. to how results are displayed in table
+
+
 \newgeometry{left=3cm,bottom=2cm, top=3cm, right=2.5cm, footskip=0.2cm}
 \begin{landscape}
-
 \begin{table*}[h!]\centering
 \ra{1.3}
   \begin{tabular}{@{}p{0.1\textwidth}p{0.15\textwidth}p{0.3\textwidth}p{0.15\textwidth}p{0.3\textwidth}@{}} \toprule 
@@ -715,7 +738,6 @@ To evaluate the software migration system will involve the use of case studies a
   NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is of a size acceptable to the stakeholder. & - & - \\
   NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. & - & - \\
     \bottomrule
-
 \caption{Case Study Functionl/Non-Functional Test Results}
 \label{table:case_study_func_test_results}
   \end{longtable}
@@ -725,6 +747,19 @@ To evaluate the software migration system will involve the use of case studies a
 \chapter{Conclusion}
 %TODO
 %TODO discuss effort of testing
+%TODO: further work - analyze includes to map between libraries e.g. "abdrive.h" -> "Servo.h"
 
 \printbibliography
+
+\begin{appendices}
+\chapter{Case Studies} \label{case_studies}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Parallax Source}\label{cs1_in}]{graphics/ir_humidity_sensors_in.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_in.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Netlist}\label{cs1_netlist}]{graphics/ir_humidity_sensors_netlist.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_netlist.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Generated Code}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
+
+
+\end{appendices}
 \end{document}
