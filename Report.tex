@@ -665,11 +665,14 @@ Additionally, due to time limitations the config file used for the Fritzing netl
 % TODO: no backup for config file
 
 \chapter{Evaluation}
-% TODO: add intro.
-\section{Test Plan}
+% TODO: finish intro.
+Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise the results of the evaluation. For each requirement from Chapter \ref{req_gathering} they indicate whether this requirement was met and include in the comments column which test case(s) or other analysis prove this is the case.
+\section{Test Plan} \label{test_plan}
 The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced.
 
 Evaluation of the software migration system will take the form of case studies at differing levels of complexity.
+%TODO: add intro. to how results are displayed in table
+
 % test plan: defines the software under test and the testing strategy
 	% test using case studies
 	% test 3 main components for correctness
@@ -697,12 +700,112 @@ Figure \ref{fig:cs1} shows the Fritzing diagram for the target platform in CS-1.
 \subsubsection{Description}
 The source code and circuit uses infrared receivers/LEDs to detect and move around its surroundings using servo motors. Periodically, a humidity reading is taken from the humidity/temperature sensor. If this is above some threshold, an LED lights up. When connected to a computer, the humidity and temperature readings can be displayed to the console. Since Parallax only supports a subset of C, in order to write to the console a function myPrintf is defined in the source code. This performs the same function as the standard libraries' printf.
 
-This case study is used to demonstrate the migration of code for components that require different complexities of mapping between the source and target platforms. Firstly, mapping betweenuse of two functionalities that require the use of platform libraries: the servo motors and a humidity/temperature sensor. 
-%TODO: description of why this case study chosen
-%TODO: analysis of migration
-%TODO: add results in table
-%TODO: add intro. to how results are displayed in table
+This case study is used to demonstrate the migration of code for components that require different complexities of mapping between the source and target platforms. Firstly, it is fairly simple to map between the libraries for the humidity and temperature sensor. 
 
+In the Parallax source, this sensor can be used as:
+\begin{verbatim}
+#include "dht22.h"
+
+dht22_read(sensorPin);        // Get most recent readings
+dht22_getHumidity();          // Get humidity reading
+dht22_getTemp(CELSIUS);       // Get temperature reading
+\end{verbatim}
+
+To use the same functionality in the Arduino code requires the following:
+\begin{verbatim}
+#include "DHT.h"
+
+DHT humiditySensor(DHTPIN, DHTTYPE); // Setup
+humiditySensor.readHumidity();       // Get humidity reading
+humiditySensor.readTemperature();    // Get temperature reading
+\end{verbatim}
+
+Aside from some small differences in how the sensors are initialised, there is an almost exact mapping between the methods for reading humidity/temperature values. 
+
+Mapping between methods to use the servos is more difficult. For example, to control the servos in Parallax, you can provide the speed to each servo in ticks per second (where a tick is $\frac{1}{64}$ of a wheel rotation). The Parallax libraries also include methods to gradually accelerate to a specified speed (e.g. \codeword{drive_RampStep}. On the other hand, the Arduino libraries control the servos using pulse width (see \parencite{pulse_width} for more information on how this is used to control servos). See below for an example of how servos are controlled in Parallax compared to Arduino.
+\begin{verbatim}
+/* Parallax */
+#include "abdrive.h"
+
+// Perform two servo rotations per second
+// Note we do not need to set up pins for the servos in Parallax
+drive_rampStep(128 /*left*/, 128 /*right*/); 
+
+/* Arduino */
+
+Servo servoLeft, servoRight;
+
+// Setup servo pins
+servoLeft.attach(13);
+servoRight.attach(12);
+
+servoLeft.writeMicroseconds(1600);
+servoRight.writeMicroseconds(1600);
+delay(20); 
+\end{verbatim}
+
+\subsubsection{Discussion/Analysis}
+
+\begin{description}
+\item[Fritzing netlist analysis:] 
+The migration process was able to generate the correct pins for the input netlist. From \ref{fig:cs1} the following pins should be generated:
+\begin{itemize}
+\item IR receivers $\rightarrow$ 10, 3
+\item IR LEDs $\rightarrow$ 9, 2
+\item Servos $\rightarrow$ 13, 12
+\item Red LED $\rightarrow$ 7
+\item Humidity and temp. sensor $\rightarrow$ 6
+\end{itemize}
+
+Figure \ref{fig:cs1_gen_pins} shows the generated variables in the output code. These correspond to the expected variables and have intelligible names except in the case of \codeword{ts2ReadPin1/ts1ReadPin1}. This is because the name of the IR receivers in Fritzing is ``TSOP312.., 314..'' and so this can't be used to generate a useful variable name.  
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\linewidth]{graphics/cs1_gen_pins.png}
+  \caption{Generated pin variables.}
+  \label{fig:cs1_gen_pins}
+\end{figure}
+
+\item[Arduino library suggestions:]
+The servos and humidity/temp. sensor require the use of libraries in the Arduino code. The appropriate libraries are \codeword{Servo.h} and \codeword{DHT.h} respectively. Figure \ref{fig:selection_options} shows the suggestions shown to the user in the migration process for these parts (with the correct libraries highlighted). Both of the correct libraries were shown in the top 5 suggestions showing that, in this case, LibraryRanker provides a useful heuristic. Furthermore, for the humidity and temperature sensor, the more highly suggested libraries are all for humidity/temp. sensors just not the specific \codeword{DHT22} sensor used in this circuit.
+The \codeword{Boards.h} library is ranked higher than \codeword{Servo.h} as it contains macro definitions for variables such as \codeword{MAX_SERVOS} for many different types of board (e.g. Arduino Mega, Primo etc.) and therefore the term ``servo'' appears many times, contributing to a higher \textbf{TF-IDF} rank. A potential improvement to the ranking heuristic would also take file size into account e.g. consider the proportion of the file containing the term ``servo'' as opposed to the raw count.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\linewidth]{graphics/selection_options.png}
+  \caption{Top suggestions for key sensors in CS-1.}
+  \label{fig:selection_options}
+\end{figure}
+\item[Generated code:]
+Two types of compile-time errors were present in the generated output from the migration system. Firstly, a macro definition from the Parallax \codeword{dht22} library (\codeword{CELSIUS}) caused an error as it was not defined in the generated output (see Figure \ref{fig:celsius_error}). Additionally there was no indication that this variable needed to be replaced in the generated code.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\linewidth]{graphics/celsius_error.png}
+  \caption{Compile error due to header macro definition.}
+  \label{fig:celsius_error}
+\end{figure}
+
+Figure \ref{fig:celsius_ast} shows the AST of the source code for this declaration. Although \codeword{CELSIUS} is used in the code, this is resolved to the literal expression having a value of 0 in the AST. As such, there is no way to tell from the AST that this value comes from a definition in a library file. One solution would be to copy all the macro definitions from the includes in the Parallax code. However, this could become very messy and increase the file size a lot particularly when there are many included files. A better solution would require creating a parser that would indicate these macros within the AST but this is outside the scope of this project.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/celsius_ast.png}
+  \caption{AST for the declaration using a macro definition. The value is resolved to a literal expression (highlighted in red).}
+  \label{fig:celsius_ast}
+\end{figure}
+
+The second type of compile-time error is due to no return types as can be seen in Figure \ref{fig:return_type_error}. It would be fairly easy to add default return values. However, this compile-time error can work as an extra indication that this method needs completing manually and so it is useful to leave this procedure as it is.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/return_type_error.png}
+  \caption{Compile error due to no return.}
+  \label{fig:return_type_error}
+\end{figure}
+\item[Manual adaptation/deployment on Arduino:] %TODO
+\end{description}
+
+%TODO: analysis of migration - incl reference to tables to say they indicate results
+%TODO: add results in table (e.g. tick and state satisfied because of CS-1)
 
 \newgeometry{left=3cm,bottom=2cm, top=3cm, right=2.5cm, footskip=0.2cm}
 \begin{landscape}
@@ -748,6 +851,7 @@ This case study is used to demonstrate the migration of code for components that
 %TODO
 %TODO discuss effort of testing
 %TODO: further work - analyze includes to map between libraries e.g. "abdrive.h" -> "Servo.h"
+%TODO: ranking libs -> larger libraries more likely to be ranked higher e.g. boards.h has many references to servos because it contains defs for each board
 
 \printbibliography
 

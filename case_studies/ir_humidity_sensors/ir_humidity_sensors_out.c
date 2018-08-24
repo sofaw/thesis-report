@@ -1,14 +1,19 @@
 #include "DHT.h"
 #include "Servo.h"
   
-const int basicServo1WritePin1 = 13;  
+const int basicServo1WritePin1 = 12;  
 const int humidityandTemperatureSensorRHT031ReadPin1 = 6;  
-const int tS2ReadPin1 = 10;  
+const int tS2ReadPin1 = 3;  
 const int infrared850nmLED1WritePin1 = 2;  
-const int tS1ReadPin1 = 3;  
+const int tS1ReadPin1 = 10;  
 const int infrared850nmLED2WritePin1 = 9;  
-const int basicServo2WritePin1 = 12;  
+const int basicServo2WritePin1 = 13;  
 const int red633nmLED1WritePin1 = 7;  
+
+int irLeft, irRight;
+int humPin = 6;
+int ledPin = 8;
+float humThresh = 25.0;
 
 void setup() {
   low(26);
@@ -34,13 +39,13 @@ void loop() {
   irLeft = input(10);
   freqout(1, 1, 38000);
   irRight = input(2);
-  if(irRight == 1 && irLeft == 1) {            // No obstacles?
-        drive_rampStep(128, 128);                 // ...full speed ahead
-      } else if(irLeft == 0 && irRight == 0)        // Left & right obstacles?
-        drive_rampStep(-128, -128);               // ...full speed reverse
-      else if(irRight == 0)                       // Just right obstacle?
-        drive_rampStep(-128, 128);                // ...rotate left
-      else if(irLeft == 0)                        // Just left obstacle?
+  if(irRight == 1 && irLeft == 1) {
+        drive_rampStep(128, 128);
+      } else if(irLeft == 0 && irRight == 0)
+        drive_rampStep(-128, -128);
+      else if(irRight == 0)
+        drive_rampStep(-128, 128);
+      else if(irLeft == 0)
         drive_rampStep(128, -128);
 }
 
@@ -49,7 +54,7 @@ void myPrintf(float fVal)
     char result[100];
     int dVal, dec, i;
 
-    fVal += 0.005;   // added after a comment from Matt McNabb, see below.
+    fVal += 0.005;
 
     dVal = fVal;
     dec = (int)(fVal * 100) % 100;
@@ -72,15 +77,15 @@ void myPrintf(float fVal)
     }
 }
 
+char dht22_read(int dht_pin) {
+	// TODO: complete method
+}
+
 int dht22_getHumidity() {
 	// TODO: complete method
 }
 
-void drive_setRampStep(int stepsize) {
-	// TODO: complete method
-}
-
-void low(int pin) {
+void high(int pin) {
 	// TODO: complete method
 }
 
@@ -88,15 +93,11 @@ void freqout(int pin, int msTime, int frequency) {
 	// TODO: complete method
 }
 
-void drive_rampStep(int left, int right) {
-	// TODO: complete method
-}
-
 int input(int pin) {
 	// TODO: complete method
 }
 
-char dht22_read(int dht_pin) {
+void drive_rampStep(int left, int right) {
 	// TODO: complete method
 }
 
@@ -104,7 +105,11 @@ int dht22_getTemp(char temp_units) {
 	// TODO: complete method
 }
 
-void high(int pin) {
+void low(int pin) {
+	// TODO: complete method
+}
+
+void drive_setRampStep(int stepsize) {
 	// TODO: complete method
 }
 
