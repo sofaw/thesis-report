@@ -771,7 +771,9 @@ The following test cases evaluate the quality of the output from the Arduino lib
 \end{description}
 
 \subsubsection{Discussion} \label{arduino_lib_discussion}
-%TODO: add discussion of arduino lib suggestions
+For all three test cases the correct libraries were shown in the top 5 suggestions showing that, in this case, LibraryRanker provides a useful heuristic for narrowing down the libraries for the target platform code. The ranking algorithm proved particularly effective for the LCD display component with the appropriate \codeword{LiquidCrystal.h} library being ranked top. Although the correct library was only ranked fourth in the case of the humidity and temperature sensor, the more highly suggested libraries are all for humidity/temp. sensors just not the specific \codeword{DHT22} sensor used in this circuit.
+
+A potential issue with the ranking algorithm is highlighted by the servo test case. The \codeword{Boards.h} library is ranked higher than \codeword{Servo.h} as it contains macro definitions for variables such as \codeword{MAX_SERVOS} for many different types of board (e.g. Arduino Mega, Primo etc.) and therefore the term ``servo'' appears many times, contributing to a higher \textbf{TF-IDF} rank. A potential improvement to the ranking heuristic would also take file size into account e.g. consider the proportion of the file containing the term ``servo'' as opposed to the raw count.
 
 \subsection{Parallax Source Code Analysis Test Cases}
 %TODO
@@ -857,8 +859,7 @@ Figure \ref{fig:cs1_gen_pins} shows the generated variables in the output code. 
 \end{figure}
 
 \item[Arduino library suggestions:]
-The servos and humidity/temp. sensor require the use of libraries in the Arduino code. The appropriate libraries are \codeword{Servo.h} and \codeword{DHT.h} respectively. Figure \ref{fig:selection_options} shows the suggestions shown to the user in the migration process for these parts (with the correct libraries highlighted). Both of the correct libraries were shown in the top 5 suggestions showing that, in this case, LibraryRanker provides a useful heuristic. Furthermore, for the humidity and temperature sensor, the more highly suggested libraries are all for humidity/temp. sensors just not the specific \codeword{DHT22} sensor used in this circuit.
-The \codeword{Boards.h} library is ranked higher than \codeword{Servo.h} as it contains macro definitions for variables such as \codeword{MAX_SERVOS} for many different types of board (e.g. Arduino Mega, Primo etc.) and therefore the term ``servo'' appears many times, contributing to a higher \textbf{TF-IDF} rank. A potential improvement to the ranking heuristic would also take file size into account e.g. consider the proportion of the file containing the term ``servo'' as opposed to the raw count.
+%TODO delete
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.7\linewidth]{graphics/selection_options.png}
