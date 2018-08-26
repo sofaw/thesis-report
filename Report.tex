@@ -663,31 +663,121 @@ Additionally, due to time limitations the config file used for the Fritzing netl
 %TODO: would be easy to replace config w. hardcoded mapping between libs; no guarantee that previous library choices are reliable; no indication of how many times a library has previously been chosen;
 
 % TODO: no backup for config file
+%TODO: *** only migrates methods ->
 
 \chapter{Evaluation}
-% TODO: finish intro.
-Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise the results of the evaluation. For each requirement from Chapter \ref{req_gathering} they indicate whether this requirement was met and include in the comments column which test case(s) or other analysis prove this is the case.
+This chapter aims to evaluate the software migration system against the requirements set out in Chapter \ref{req_gathering}. Section \ref{test_plan} outlines how this will be achieved followed by Sections \ref{test_cases}-\ref{eval_modifiability} describing the actual testing performed.
+
+Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise the results of the evaluation against the corresponding requirements. For each requirement from Chapter \ref{req_gathering} they indicate whether this requirement was met and include in the comments column which test case(s) or other analysis prove this is the case.
+
+Finally, Sections \ref{test_summary} and \ref{eval_limits} summarise the testing and discuss the limitations of the project respectively.
+
 \section{Test Plan} \label{test_plan}
-The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced.
+The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced. Section \ref{test_cases} outlines the test cases used for this part of the evaluation.
 
-Evaluation of the software migration system will take the form of case studies at differing levels of complexity.
-%TODO: add intro. to how results are displayed in table
+The full system must then be evaluated against the requirements in Chapter \ref{req_gathering}. Case studies in Section \ref{eval_case_studies} are used to evaluate whether all requirements except S-2, NF-1 and NF-2 are met.
 
-% test plan: defines the software under test and the testing strategy
-	% test using case studies
-	% test 3 main components for correctness
-	% test overall system
-% specification of system tests - ensure that the system does what it was designed to do; done by developers
-	% Numbered list of tests i.e. preconditions; input; expected behaviour; description; ex. had 7 tests
-% System Acceptance Testing Results - go through requirements and say if they're met
-% Summary of current issues
-% Test summary
-% Limitations: four types of validity threats that are used to state the limitations a software experiment: internal, external, construct, and conclusion.
+The requirements S-2, NF-1 and NF-2 concern the modifiability of the system. These requirements and whether they have been met are discussed in Section \ref{eval_modifiability}.
+	
+\section{Test Specification} \label{test_cases}
+	
+\subsection{Fritzing Netlist Analysis Test Cases}
+%TODO: add intro to Fritzing test cases
+\subsubsection{Test Case 1}
+\begin{description}
+\item[Description:] Check that a component with multiple pins is handled correctly.
+\item[Input:] Netlist shown in Section \ref{lcd_netlist} for the diagram in Figure \ref{fig:lcd_test}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/LCD_test.png}
+  \caption{Fritzing diagram for Fritzing netlist analysis test case 1.}
+  \label{fig:lcd_test}
+\end{figure}
+\item[Expected Output:] lcd $\rightarrow$ 2, 3, 4, 5, 11, 12
+\item[Actual Output:] See Figure \ref{fig:lcd_output}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\linewidth]{graphics/lcd_test_output.png}
+  \caption{Output of Fritzing netlist analysis test case 1.}
+  \label{fig:lcd_output}
+\end{figure}
+\item[Result:] Test case passed
+\end{description}
+
+\subsubsection{Test Case 2}
+\begin{description}
+\item[Description:] Check that multiple components connected to one pin are handled correctly.
+\item[Input:] Netlist shown in Section \ref{one_pin_netlist} for the diagram in Figure \ref{fig:one_pin_diagram}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.3\linewidth]{graphics/One_Pin.png}
+  \caption{Fritzing diagram for Fritzing netlist analysis test case 2.}
+  \label{fig:one_pin_diagram}
+\end{figure}
+\item[Expected Output:] led1 $\rightarrow$ 13; led2 $\rightarrow$ 13
+\item[Actual Output:] See Figure \ref{fig:one_pin_out}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/one_pin_out.png}
+  \caption{Output of Fritzing netlist analysis test case 2.}
+  \label{fig:one_pin_out}
+\end{figure}
+\item[Result:] Test case passed
+\end{description}
+
+\subsubsection{Test Case 3}
+%TODO: case study netlist
+
+\subsection{Arduino Library Suggestion Test Cases}
+The following test cases evaluate the quality of the output from the Arduino libraries suggestion component. Three circuit parts that require the use of Arduino libraries have been chosen and this component has been used to generate a list of candidate libraries. For each component, the suggestions are inspected to determine the rank of the expected library. Section \ref{arduino_lib_discussion} discusses the results of these test cases.
+
+\subsubsection{Test Case 1}
+\begin{description}
+\item[Input:] LCD Screen
+\item[Expected Library:] \codeword{LiquidCrystal.h}
+\item[Actual Output:] See Figure \ref{fig:lib_suggest_lcd}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/lib_suggest_lcd.png}
+  \caption{Output of Arduino library suggestion test case 1.}
+  \label{fig:lib_suggest_lcd}
+\end{figure}
+\end{description}
+
+\subsubsection{Test Case 2}
+\begin{description}
+\item[Input:] Humidity and temperature sensor (DHT22)
+\item[Expected Library:] \codeword{DHT.h}
+\item[Actual Output:] See Figure \ref{fig:lib_suggest_humidity}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/lib_suggest_humidity.png}
+  \caption{Output of Arduino library suggestion test case 2.}
+  \label{fig:lib_suggest_humidity}
+\end{figure}
+\end{description}
+
+\subsubsection{Test Case 3}
+\begin{description}
+\item[Input:] Servo
+\item[Expected Library:] \codeword{Servo.h}
+\item[Actual Output:] See Figure \ref{fig:lib_suggest_servo}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{graphics/lib_suggest_servo.png}
+  \caption{Output of Arduino library suggestion test case 3.}
+  \label{fig:lib_suggest_servo}
+\end{figure}
+\end{description}
+
+\subsubsection{Discussion} \label{arduino_lib_discussion}
+%TODO: add discussion of arduino lib suggestions
+
+\subsection{Parallax Source Code Analysis Test Cases}
 %TODO
 
-\section{Case Studies}
-
-\subsection{Case Study 1 (CS-1)}
+\section{Case Studies} \label{eval_case_studies}
+\subsection{Case Study 1 (CS-1)} \label{cs1}
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.7\linewidth]{graphics/ir_humidity_sensors.png}
@@ -807,6 +897,15 @@ The second type of compile-time error is due to no return types as can be seen i
 %TODO: analysis of migration - incl reference to tables to say they indicate results
 %TODO: add results in table (e.g. tick and state satisfied because of CS-1)
 
+\subsection{Case Study 2 (CS-2)}
+%TODO: case study to eval F-3
+
+\subsection{Case Study 3 (CS-3)}
+%TODO: case study to eval F-4
+
+\section{Evaluation of Modifiability} \label{eval_modifiability}
+%TODO: discuss how design of system supports modification
+
 \newgeometry{left=3cm,bottom=2cm, top=3cm, right=2.5cm, footskip=0.2cm}
 \begin{landscape}
 \begin{table*}[h!]\centering
@@ -847,15 +946,27 @@ The second type of compile-time error is due to no return types as can be seen i
 \end{landscape}
 
 \restoregeometry
+
+\section{Test Summary} \label{test_summary}
+%TODO: complete test summary incl. summary of current issues
+\subsection{Current Issues}
+\section{Limitations} \label{eval_limits}
+%TODO: complete limitations - internal, external, construct, conclusion validity
 \chapter{Conclusion}
 %TODO
 %TODO discuss effort of testing
 %TODO: further work - analyze includes to map between libraries e.g. "abdrive.h" -> "Servo.h"
 %TODO: ranking libs -> larger libraries more likely to be ranked higher e.g. boards.h has many references to servos because it contains defs for each board
-
+%TODO: copy across comments for methods stubs -> otherwise have to lookup what function does
+%TODO: migrate between classes and typedefs
 \printbibliography
 
 \begin{appendices}
+\chapter{Fritzing Netlist Analysis Inputs}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Netlist}\label{lcd_netlist}]{graphics/LCD_netlist.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/One_Pin.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 2 Netlist}\label{one_pin_netlist}]{graphics/One_Pin.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/LCD_netlist.pdf}
 \chapter{Case Studies} \label{case_studies}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Parallax Source}\label{cs1_in}]{graphics/ir_humidity_sensors_in.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_in.pdf}
@@ -863,6 +974,8 @@ The second type of compile-time error is due to no return types as can be seen i
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_netlist.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Generated Code}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Migrated Code}\label{cs1_migrated}]{graphics/ir_humidity_sensors_migrated.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_migrated.pdf}
 
 
 \end{appendices}
