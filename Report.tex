@@ -19,6 +19,8 @@
 \usepackage{subcaption}
 \usepackage{pdfpages}
 
+\setcounter{secnumdepth}{4}
+
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
@@ -679,10 +681,11 @@ The full system must then be evaluated against the requirements in Chapter \ref{
 
 The requirements S-2, NF-1 and NF-2 concern the modifiability of the system. These requirements and whether they have been met are discussed in Section \ref{eval_modifiability}.
 	
-\section{Test Specification} \label{test_cases}
+\section{Test Cases} \label{test_cases}
 	
 \subsection{Fritzing Netlist Analysis Test Cases}
-%TODO: add intro to Fritzing test cases
+The following test cases check that the Fritzing Netlist Analysis component generates pin variables as expected. Each test case contains a description of the goal of that particular test, the input netlist, expected variables and the actual output. Finally, Section \ref{fritzing_analysis_discussion} contains a discussion of the results of these tests.
+
 \subsubsection{Test Case 1}
 \begin{description}
 \item[Description:] Check that a component with multiple pins is handled correctly.
@@ -726,7 +729,36 @@ The requirements S-2, NF-1 and NF-2 concern the modifiability of the system. The
 \end{description}
 
 \subsubsection{Test Case 3}
-%TODO: case study netlist
+\begin{description}
+\item[Description:] Check that a more complex netlist with many components is handled correctly. Additionally check that intermediate components between input/output parts (e.g. resistors) are ignored.
+
+\item[Input:] Netlist shown in Section \ref{ir_hum_netlist} for the diagram in Figure \ref{fig:ir_hum_diagram}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\linewidth]{graphics/ir_humidity_sensors.png}
+  \caption{Fritzing diagram for Fritzing netlist analysis test case 3.}
+  \label{fig:ir_hum_diagram}
+\end{figure}
+\item[Expected Output:] 
+\begin{itemize}
+\item IR receivers $\rightarrow$ 10, 3
+\item IR LEDs $\rightarrow$ 9, 2
+\item Servos $\rightarrow$ 13, 12
+\item Red LED $\rightarrow$ 7
+\item Humidity and temp. sensor $\rightarrow$ 6
+\end{itemize}
+\item[Actual Output:] See Figure \ref{fig:ir_hum_out}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\linewidth]{graphics/cs1_gen_pins.png}
+  \caption{Generated pin variables.}
+  \label{fig:ir_hum_out}
+\end{figure}
+\item[Result:] Test case passed
+\end{description}
+
+\subsubsection{Discussion} \label{fritzing_analysis_discussion}
+These test cases show the Fritzing netlist analysis component performs as expected. In addition, the generated variables have intelligible names for most cases. However, the variables \codeword{ts2ReadPin1/ts1ReadPin1} are not particularly useful. This is because the name of the IR receivers in Fritzing is ``TSOP312.., 314..'' and so this can't be used to generate a useful variable name. Additionally, the ``d'' has been cut off in the case of the LCD variables, for example, \codeword{lC1WritePin1}. This indicates more work needs to be done on the logic to generate the variable names. 
 
 \subsection{Arduino Library Suggestion Test Cases}
 The following test cases evaluate the quality of the output from the Arduino libraries suggestion component. Three circuit parts that require the use of Arduino libraries have been chosen and this component has been used to generate a list of candidate libraries. For each component, the suggestions are inspected to determine the rank of the expected library. Section \ref{arduino_lib_discussion} discusses the results of these test cases.
@@ -780,12 +812,7 @@ A potential issue with the ranking algorithm is highlighted by the servo test ca
 
 \section{Case Studies} \label{eval_case_studies}
 \subsection{Case Study 1 (CS-1)} \label{cs1}
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.7\linewidth]{graphics/ir_humidity_sensors.png}
-  \caption{Fritzing diagram for CS-1.}
-  \label{fig:cs1}
-\end{figure}
+
 
 Figure \ref{fig:cs1} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{cs1_in}, \ref{cs1_netlist} and \ref{cs1_out} respectively.
 
@@ -840,23 +867,10 @@ delay(20);
 
 \begin{description}
 \item[Fritzing netlist analysis:] 
+%TODO delete
 The migration process was able to generate the correct pins for the input netlist. From \ref{fig:cs1} the following pins should be generated:
-\begin{itemize}
-\item IR receivers $\rightarrow$ 10, 3
-\item IR LEDs $\rightarrow$ 9, 2
-\item Servos $\rightarrow$ 13, 12
-\item Red LED $\rightarrow$ 7
-\item Humidity and temp. sensor $\rightarrow$ 6
-\end{itemize}
 
-Figure \ref{fig:cs1_gen_pins} shows the generated variables in the output code. These correspond to the expected variables and have intelligible names except in the case of \codeword{ts2ReadPin1/ts1ReadPin1}. This is because the name of the IR receivers in Fritzing is ``TSOP312.., 314..'' and so this can't be used to generate a useful variable name.  
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.7\linewidth]{graphics/cs1_gen_pins.png}
-  \caption{Generated pin variables.}
-  \label{fig:cs1_gen_pins}
-\end{figure}
+Figure \ref{fig:cs1_gen_pins} shows the generated variables in the output code.  
 
 \item[Arduino library suggestions:]
 %TODO delete
@@ -968,11 +982,12 @@ The second type of compile-time error is due to no return types as can be seen i
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/One_Pin.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 2 Netlist}\label{one_pin_netlist}]{graphics/One_Pin.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/LCD_netlist.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 3 Netlist}\label{ir_hum_netlist}]{graphics/ir_humidity_sensors_netlist.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_netlist.pdf}
+
 \chapter{Case Studies} \label{case_studies}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Parallax Source}\label{cs1_in}]{graphics/ir_humidity_sensors_in.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_in.pdf}
-\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Netlist}\label{cs1_netlist}]{graphics/ir_humidity_sensors_netlist.pdf}
-\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_netlist.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Generated Code}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Migrated Code}\label{cs1_migrated}]{graphics/ir_humidity_sensors_migrated.pdf}
