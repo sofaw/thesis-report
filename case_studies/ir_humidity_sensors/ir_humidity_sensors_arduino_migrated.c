@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "DHT.h"
 #include "Servo.h"
 

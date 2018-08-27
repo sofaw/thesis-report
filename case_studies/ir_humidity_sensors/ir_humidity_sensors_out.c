@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "DHT.h"
 #include "Servo.h"
   
@@ -26,10 +27,6 @@ void loop() {
   float humidity = dht22_getHumidity();
   humidity = humidity / 10.0;
   float temp = dht22_getTemp(CELSIUS) / 10.0;
-  myPrintf(humidity);
-  putchar('\n');
-  myPrintf(temp);
-  putchar('\n');
   if(temp > humThresh) {
         high(ledPin);
       } else {
@@ -77,7 +74,7 @@ void myPrintf(float fVal)
     }
 }
 
-char dht22_read(int dht_pin) {
+int input(int pin) {
 	// TODO: complete method
 }
 
@@ -85,23 +82,7 @@ int dht22_getHumidity() {
 	// TODO: complete method
 }
 
-void high(int pin) {
-	// TODO: complete method
-}
-
-void freqout(int pin, int msTime, int frequency) {
-	// TODO: complete method
-}
-
-int input(int pin) {
-	// TODO: complete method
-}
-
-void drive_rampStep(int left, int right) {
-	// TODO: complete method
-}
-
-int dht22_getTemp(char temp_units) {
+char dht22_read(int dht_pin) {
 	// TODO: complete method
 }
 
@@ -109,7 +90,23 @@ void low(int pin) {
 	// TODO: complete method
 }
 
+int dht22_getTemp(char temp_units) {
+	// TODO: complete method
+}
+
 void drive_setRampStep(int stepsize) {
+	// TODO: complete method
+}
+
+void freqout(int pin, int msTime, int frequency) {
+	// TODO: complete method
+}
+
+void drive_rampStep(int left, int right) {
+	// TODO: complete method
+}
+
+void high(int pin) {
 	// TODO: complete method
 }
 

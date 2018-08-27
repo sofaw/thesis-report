@@ -808,14 +808,47 @@ For all three test cases the correct libraries were shown in the top 5 suggestio
 A potential issue with the ranking algorithm is highlighted by the servo test case. The \codeword{Boards.h} library is ranked higher than \codeword{Servo.h} as it contains macro definitions for variables such as \codeword{MAX_SERVOS} for many different types of board (e.g. Arduino Mega, Primo etc.) and therefore the term ``servo'' appears many times, contributing to a higher \textbf{TF-IDF} rank. A potential improvement to the ranking heuristic would also take file size into account e.g. consider the proportion of the file containing the term ``servo'' as opposed to the raw count.
 
 \subsection{Parallax Source Code Analysis Test Cases}
-%TODO
+The expected behaviour for code generation is:
+\begin{itemize}
+\item Parallax library include statements \textit{are not} present in the output
+\item Any other library include statements \textit{are} present in the generated code
+\item Empty methods with TODO directives are generated for any Parallax library methods used in the input code
+\item Code from the main method outside of the \codeword{while(1)} loop in the input is copied to a \codeword{setup()} method in the output
+\item Code from the \codeword{while(1)} loop in the input is copied to the \codeword{loop()} method of the output
+\item Any other methods defined in the input are copied to the output
+\end{itemize}
+The test case in Section \ref{parallax_tc1} checks that the Parallax source code analysis component generates code as expected. This is followed by a discussion of the results in Section \ref{parallax_test_discussion}.
+
+\subsubsection{Test Case 1} \label{parallax_tc1}
+\begin{description}
+\item[Description:] The input source code contains a mixture of Parallax library methods and other functions. This test case checks that empty methods are only generated for the Parallax library methods and no include statements are copied across.
+\item[Input:] The source code in Appendix \ref{ir_hum_parallax_in}.
+\item[Expected Output:] Methods generated with the following signatures:
+\begin{itemize}
+\item \codeword{void drive_setRampStep(int stepsize)}
+\item \codeword{void drive_rampStep(int left, int right)}
+\item \codeword{int input(int pin)}
+\item \codeword{void high(int pin)}
+\item \codeword{void low(int pin)}
+\item \codeword{void freqout(int pin, int msTime, int frequency)}
+\item \codeword{char dht22_read(int dht_pin)}
+\item \codeword{int dht22_getTemp(char temp_units)}
+\item \codeword{int dht22_getHumidity()}
+\end{itemize}
+No include statments in output.
+\item[Actual Output:] See Appendix \ref{parallax_tc1_out}.
+\item[Result:] Test case passed.
+\end{description}
+
+\subsubsection{Discussion} \label{parallax_test_discussion}
+%TODO: discuss
 
 \section{Case Studies} \label{eval_case_studies}
+%TODO: add intro
 \subsection{Case Study 1 (CS-1)} \label{cs1}
+Figure \ref{fig:ir_hum_diagram} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{ir_hum_parallax_in}, \ref{ir_hum_netlist} and \ref{cs1_out} respectively.
 
-
-Figure \ref{fig:cs1} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{cs1_in}, \ref{cs1_netlist} and \ref{cs1_out} respectively.
-
+% TODO: update the case study now fritz/arduino/parallax analysis moved earlier - can ref unit tests
 \subsubsection{Description}
 The source code and circuit uses infrared receivers/LEDs to detect and move around its surroundings using servo motors. Periodically, a humidity reading is taken from the humidity/temperature sensor. If this is above some threshold, an LED lights up. When connected to a computer, the humidity and temperature readings can be displayed to the console. Since Parallax only supports a subset of C, in order to write to the console a function myPrintf is defined in the source code. This performs the same function as the standard libraries' printf.
 
@@ -977,7 +1010,7 @@ The second type of compile-time error is due to no return types as can be seen i
 \printbibliography
 
 \begin{appendices}
-\chapter{Fritzing Netlist Analysis Inputs}
+\chapter{Fritzing Netlist Analysis Test Inputs}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Netlist}\label{lcd_netlist}]{graphics/LCD_netlist.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/One_Pin.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 2 Netlist}\label{one_pin_netlist}]{graphics/One_Pin.pdf}
@@ -985,10 +1018,14 @@ The second type of compile-time error is due to no return types as can be seen i
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 3 Netlist}\label{ir_hum_netlist}]{graphics/ir_humidity_sensors_netlist.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_netlist.pdf}
 
-\chapter{Case Studies} \label{case_studies}
-\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Parallax Source}\label{cs1_in}]{graphics/ir_humidity_sensors_in.pdf}
+\chapter{Parallax Source Code Analysis Test Inputs/Outputs}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Parallax Source Input}\label{ir_hum_parallax_in}]{graphics/ir_humidity_sensors_in.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_in.pdf}
-\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Generated Code}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Parallax Source Output}\label{parallax_tc1_out}]{graphics/parallax_test_case_1_out.pdf}
+\includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/parallax_test_case_1_out.pdf}
+
+\chapter{Case Studies} \label{case_studies}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Output}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Migrated Code}\label{cs1_migrated}]{graphics/ir_humidity_sensors_migrated.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_migrated.pdf}

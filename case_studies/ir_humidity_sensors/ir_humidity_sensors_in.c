@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "abdrive.h"
 #include "dht22.h"
 #include "simpletools.h"
