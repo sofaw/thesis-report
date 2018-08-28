@@ -18,6 +18,7 @@
 \usepackage[toc,page]{appendix}
 \usepackage{subcaption}
 \usepackage{pdfpages}
+\usepackage{pifont}
 
 \setcounter{secnumdepth}{4}
 
@@ -28,6 +29,8 @@
 \NewDocumentCommand{\codeword}{v}{%
 \texttt{{#1}}%
 }
+\newcommand{\xmark}{\ding{55}}%
+\renewcommand{\checkmark}{\ding{51}}
 
 \addbibresource{references.bib}
 \author{Sophie Wood}
@@ -424,7 +427,7 @@ The requirements traceability matrix shown in Table \ref{table:traceability} sho
 \label{table:traceability}
 \end{table*}
 
-\chapter{Design and Implementation}
+\chapter{Design and Implementation} \label{design_and_impl}
 This chapter of the report discusses the decisions made in designing and implementing the system for supporting the migration of software from a Parallax Propeller Activity Board to an Arduino (these will be referred to as the source and target respectively). The system is implemented as an Eclipse plugin to assist in usability. Firstly, the high-level architecture of the plugin will be presented in Section \ref{high_lev_arch} along with the design rationale. This will be followed by an examination of the low-level architecture and implementation of these components in Sections \ref{fritz_design} to \ref{parallax_design}.
 
 
@@ -849,7 +852,7 @@ The test case in Section \ref{parallax_tc1} checks that the Parallax source code
 \end{description}
 
 \section{Case Studies} \label{eval_case_studies}
-The following case studies are used to evaluate whether the requirements set out in Chapter \ref{req_gathering} have been met. The first case study in Section \ref{cs1} demonstrates the operation of the system when provided with correct inputs and is used to evaluate requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4. The second and third case studies (in sections \ref{cs2} and \ref{cs3}) are used to evaluate the system when there are errors in the migration process. These case studies are used to evaluate requirements F-3 and F-4 respectively. A summary of the results of these case studies along with the corresponding requirements are contained in tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results}.
+The following case studies are used to evaluate whether the requirements set out in Chapter \ref{req_gathering} have been met. The first case study in Section \ref{cs1} demonstrates the operation of the system when provided with correct inputs and is used to evaluate requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4. The second and third case studies (in sections \ref{cs2} and \ref{cs3}) are used to evaluate the system when there are errors in the migration process. These case studies are used to evaluate requirements F-3 and S-3/F-4 respectively. A summary of the results of these case studies along with the corresponding requirements are contained in tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results}.
 
 \subsection{Case Study 1 (CS-1)} \label{cs1}
 Figure \ref{fig:ir_hum_diagram} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{ir_hum_parallax_in}, \ref{ir_hum_netlist} and \ref{cs1_out} respectively. For this case study, the correct functioning of the Fritzing netlist analysis, Arduino libraries suggestion and Parallax source code analysis components have been evaluated in the earlier sections \ref{fritz_tc3}, \ref{arduino_tc2}/\ref{arduino_tc3} and \ref{parallax_tc1} respectively. The migrated code (i.e. the output code from the system with manual additions) is shown in Appendix \ref{cs1_migrated}.
@@ -901,7 +904,7 @@ servoRight.writeMicroseconds(1600);
 delay(20); 
 \end{verbatim}
 
-\subsubsection{Analysis}
+\subsubsection{Analysis} \label{cs1_analysis}
 Firstly, the system was successful in demonstrating that, provided with correct inputs, it is able to generate code (i.e. Appendix \ref{cs1_out}) that with manual additions (i.e. Appendix \ref{cs1_migrated}) can be run on the target platform, consequently satisfying requirement S-1.
  
 Two types of compile-time errors were present in the generated output (see Appendix \ref{cs1_out}) from the migration system. Firstly, a macro definition from the Parallax \codeword{dht22} library (\codeword{CELSIUS}) caused an error as it was not defined in the generated output (see Figure \ref{fig:celsius_error}). Other than this compile time error, there was no indication that this variable needed to be replaced in the generated code which is in conflict with requirements S-4/F-5. However, other than this small issue, the methods that needed to be completed were clearly marked.
@@ -944,7 +947,7 @@ Overall, with some minor exceptions, this case study has demonstrated that requi
 This case study is used to evaluate whether the requirement F-3 is met (i.e. the system displays appropriate errors when the source code cannot be migrated). The input to the system is shown in Appendix \ref{cs2_input}. This is a subset of the input code from CS-1 but without the required include statements and so the source code displays many compile-time errors. Based on F-3, the system should indicate that the migration of this file is not possible. However, no errors are thrown and the code in Appendix \ref{cs2_output} is produced. Therefore, requirement F-3 has not been met.
 
 \subsection{Case Study 3 (CS-3)} \label{cs3}
-This case study is used to evaluate whether the requirement F-4 is met (i.e. the system clearly indicates any errors that have occurred during its use). The inputs to the system are the same as CS-1 (i.e. the source code is as contained in Appendix \ref{ir_hum_parallax_in} and the netlist is the same as Appendix \ref{ir_hum_netlist}). However, an empty config file is used meaning any attempts to look up part types or previously used libraries will fail. 
+This case study is used to evaluate whether the requirements S-3/F-4 are met (i.e. the system clearly indicates any errors that have occurred during its use). The inputs to the system are the same as CS-1 (i.e. the source code is as contained in Appendix \ref{ir_hum_parallax_in} and the netlist is the same as Appendix \ref{ir_hum_netlist}). However, an empty config file is used meaning any attempts to look up part types or previously used libraries will fail. 
 
 When the system is run, the errors shown in Figures \ref{fig:cs3_output_1} and \ref{fig:cs3_output_2} are thrown. 
 \begin{figure}[h!]
@@ -960,12 +963,35 @@ When the system is run, the errors shown in Figures \ref{fig:cs3_output_1} and \
   \label{fig:cs3_output_2}
 \end{figure}
 
-With knowledge of the project, this has occurred because the second page of the Eclipse wizard (i.e. MigrationWizardPageTwo) uses the config file to find which parts of the input netlist need a library suggestion UI generating. However, without this understanding, it is not at all clear that an empty config file has caused this error. Therefore, requirement F-4 has not been met. 
+With knowledge of the project, this has occurred because the second page of the Eclipse wizard (i.e. MigrationWizardPageTwo) uses the config file to find which parts of the input netlist need a library suggestion UI generating. However, without this understanding, it is not at all clear that an empty config file has caused this error. Therefore, requirements S-3/F-4 have not been met. 
 
 \section{Evaluation of Modifiability} \label{eval_modifiability}
-%TODO: discuss how design of system supports modification
+Modifiability was one of the main factors taken into account when designing the system as discussed in Chapter \ref{design_and_impl}. Some of the decisions made to support modifiability include:
+\begin{enumerate}
+\item Use of the popular and well-documented Epsilon MDE framework.
+\item Separation between the three main components of the system (Fritzing netlist analysis, Arduino library suggestions and Parallax source code analysis).
+\item Use of Java plugins for more complex logic rather than just using Epsilon languages. For example, the code for resolving which methods come from source-platform libraries (ParallaxDependencyResolver) or the library ranking code (LibraryRanker).
+\item Using additional .eol files to simplify the coordinating model transform.
+\end{enumerate}
+These decisions support requirements S-2/NF-1 and items 2/4 support requirement NF-2. 
 
-%TODO: add results in table (e.g. tick and state satisfied because of CS-1)
+\section{Test Summary} \label{test_summary}
+The tests in Section \ref{test_cases} demonstrate that the three main components of the system (Fritzing netlist analysis, Arduino library suggestions and Parallax source code analysis) work as expected.
+
+Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise, based on the results from the case studies in Section \ref{eval_case_studies}, whether each of the requirements set out in Chapter \ref{req_gathering} was met. Note that in table \ref{table:case_study_func_test_results} the headings ``Priority'' and ``Satisfied'' have been shortened to S and P respectively to more easily display the table. A \checkmark \ symbol indicates the requirement was met and a \xmark \ indicates it wasn't. A $^*$ next to a checkmark indicates the requirement has been satisfied with some minor exception which will be mentioned in the corresponding ``Comments'' column of the table.
+These tables show that the majority of requirements have been met. In particular, all of the high priority (M/Must) requirements have been met aside from some minor exceptions. The remaining issues with the system are summarised in Section \ref{current_issues} below.
+
+\subsection{Current Issues} \label{current_issues}
+\begin{itemize}
+\item The Arduino library suggestions component could be improved, particularly in the case of large header files as discussed in Section \ref{arduino_lib_discussion}.
+\item Macro definitions from source-platform libraries have no clear indication that they need replacing in the generated code (discussed in Section \ref{cs1_analysis}).
+\item The system does not display appropriate errors when the source code can't be migrated (see Section \ref{cs2}).
+\item The system does not clearly indicate errors that have occurred during its use (see Section \ref{cs3}).
+\end{itemize}
+
+\section{Limitations} \label{eval_limits}
+%TODO: complete limitations - internal, external, construct, conclusion validity
+
 \newgeometry{left=3cm,bottom=2cm, top=3cm, right=2.5cm, footskip=0.2cm}
 \begin{landscape}
 \begin{table*}[h!]\centering
@@ -973,11 +999,11 @@ With knowledge of the project, this has occurred because the second page of the 
   \begin{tabular}{@{}p{0.1\textwidth}p{0.15\textwidth}p{0.3\textwidth}p{0.15\textwidth}p{0.3\textwidth}@{}} \toprule 
   \textbf{ID} & \textbf{Priority} & \textbf{Description} & \textbf{Satisfied} & \textbf{Comments} \\
   \midrule
-  S-1 & M & Users can provide the system with the source code for a Parallax Propeller Activity Board and target code for the Arduino Uno will be generated. & \checkmark & - \\ 
-  S-2 & M & Users can easily adapt the system to support migration of software between different microprocessors. & - & - \\
-  S-3 & S & Users can easily determine sources of errors when using the system. & - & - \\
-  S-4 & S & Users can easily identify areas of the target code that cannot automatically be migrated and must be manually completed. & - & - \\
-  S-5 & S & The performance of the migrated code is not significantly worse than the source application. & - & - \\
+  S-1 & M & Users can provide the system with the source code for a Parallax Propeller Activity Board and target code for the Arduino Uno will be generated. & \checkmark & See Section \ref{cs1_analysis}. \\ 
+  S-2 & M & Users can easily adapt the system to support migration of software between different microprocessors. & \checkmark & See Section \ref{eval_modifiability}. \\
+  S-3 & S & Users can easily determine sources of errors when using the system. & \xmark & See Section \ref{cs3}. \\
+  S-4 & S & Users can easily identify areas of the target code that cannot automatically be migrated and must be manually completed. & \checkmark$^*$ & See Section \ref{cs1_analysis}. $^*$Except macro definitions. \\
+  S-5 & S & The performance of the migrated code is not significantly worse than the source application. & \checkmark & See Section \ref{cs1_analysis}. \\
   \bottomrule
   \end{tabular}
 \caption{Case Study System Test Results}
@@ -990,29 +1016,22 @@ With knowledge of the project, this has occurred because the second page of the 
   \begin{longtable}{@{}p{0.06\textwidth}p{0.05\textwidth}p{0.3\textwidth}p{0.3\textwidth}p{0.05\textwidth}p{0.24\textwidth}@{}} \toprule 
   \textbf{ID} & \textbf{P} & \textbf{Description} & \textbf{Acceptance Criteria} &\textbf{S} & \textbf{Comments} \\
   \midrule
-      F-1 & M & The target microcontoller running the migrated code (potentially with manual additions) displays the same behaviour as the source microcontroller, provided the source code is valid. & Manual inspection of the migrated application confirms the behaviour is the same as the source application. & - & - \\
-  F-2 & M & The migrated code deploys without errors on the target microcontroller if the provided source code is valid. & Manual inspection of the migration process confirms a valid source application can be migrated without errors. & - & - \\
-  F-3 & S & The system displays appropriate errors when the source code cannot be migrated (e.g. there are errors in the source code or hardware incompatibilities). & Errors are thrown when invalid source code is provided to the migration process. & - & - \\  
-  F-4 & S & The system clearly indicates any errors that have occurred during its use (e.g. the migration process fails). & Errors are thrown if the migration process fails. The errors clearly indicate the source of the problem. & - & - \\
-  F-5 & S & The system should indicate any parts of the code that must be manually completed. & Manual inspection of the migrated code confirms that all parts of the code that must be manually completed are clearly indicated (e.g. by TODO directives). & - & - \\
-    NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. & - & - \\
-  NF-2 & S & The system should display a high-level of encapsulation. & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. & - & - \\
-  NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is of a size acceptable to the stakeholder. & - & - \\
-  NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. & - & - \\
+      F-1 & M & The target microcontoller running the migrated code (potentially with manual additions) displays the same behaviour as the source microcontroller, provided the source code is valid. & Manual inspection of the migrated application confirms the behaviour is the same as the source application. & \checkmark & See Section \ref{cs1_analysis}. \\
+  F-2 & M & The migrated code deploys without errors on the target microcontroller if the provided source code is valid. & Manual inspection of the migration process confirms a valid source application can be migrated without errors. & \checkmark$^*$ & See Section \ref{cs1_analysis}. $^*$Once manual additions have been made. \\
+  F-3 & S & The system displays appropriate errors when the source code cannot be migrated (e.g. there are errors in the source code or hardware incompatibilities). & Errors are thrown when invalid source code is provided to the migration process. & \xmark & See Section \ref{cs2}. \\  
+  F-4 & S & The system clearly indicates any errors that have occurred during its use (e.g. the migration process fails). & Errors are thrown if the migration process fails. The errors clearly indicate the source of the problem. & \xmark & See Section \ref{cs3}. \\
+  F-5 & S & The system should indicate any parts of the code that must be manually completed. & Manual inspection of the migrated code confirms that all parts of the code that must be manually completed are clearly indicated (e.g. by TODO directives). & \checkmark$^*$ & See Section \ref{cs1_analysis}. $^*$Except macro definitions from source platfrom libraries. \\
+    NF-1 & M & The system should be easy to adapt to support migration between different microcontrollers. & Manual inspection of the system should indicate that it is easy to adapt. For example, if the system is based on an established MDE framework it will be easier to adapt as there will be more documentation available. & \checkmark & See Section \ref{eval_modifiability}. \\
+  NF-2 & S & The system should display a high-level of encapsulation. & Manual inspection of the system should indicate measures have been taken to facilitate encapsulation. For example, separation of hardware-dependent parts of the code. & \checkmark & See Section \ref{eval_modifiability}. \\
+  NF-3 & S & The migrated code should not be significantly larger than the source code. & Migrated code is of a size acceptable to the stakeholder. & \checkmark & See Section \ref{cs1_analysis}. \\
+  NF-4 & S & The migrated code should exhibit similar performance to the source code. & Migrated code runs in a duration acceptable for the stakeholder. & \checkmark & See Section \ref{cs1_analysis}. \\
     \bottomrule
-\caption{Case Study Functionl/Non-Functional Test Results}
+\caption{Case Study Functional/Non-Functional Test Results}
 \label{table:case_study_func_test_results}
   \end{longtable}
 \end{landscape}
 
 \restoregeometry
-
-\section{Test Summary} \label{test_summary}
-%TODO: complete test summary incl. summary of current issues
-\subsection{Current Issues}
-\section{Limitations} \label{eval_limits}
-%TODO: complete limitations - internal, external, construct, conclusion validity
-
 
 \chapter{Conclusion}
 %TODO
