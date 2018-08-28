@@ -728,7 +728,7 @@ The following test cases check that the Fritzing Netlist Analysis component gene
 \item[Result:] Test case passed
 \end{description}
 
-\subsubsection{Test Case 3}
+\subsubsection{Test Case 3} \label{fritz_tc3}
 \begin{description}
 \item[Description:] Check that a more complex netlist with many components is handled correctly. Additionally check that intermediate components between input/output parts (e.g. resistors) are ignored.
 
@@ -776,7 +776,7 @@ The following test cases evaluate the quality of the output from the Arduino lib
 \end{figure}
 \end{description}
 
-\subsubsection{Test Case 2}
+\subsubsection{Test Case 2} \label{arduino_tc2}
 \begin{description}
 \item[Input:] Humidity and temperature sensor (DHT22)
 \item[Expected Library:] \codeword{DHT.h}
@@ -789,7 +789,7 @@ The following test cases evaluate the quality of the output from the Arduino lib
 \end{figure}
 \end{description}
 
-\subsubsection{Test Case 3}
+\subsubsection{Test Case 3} \label{arduino_tc3}
 \begin{description}
 \item[Input:] Servo
 \item[Expected Library:] \codeword{Servo.h}
@@ -807,7 +807,7 @@ For all three test cases the correct libraries were shown in the top 5 suggestio
 
 A potential issue with the ranking algorithm is highlighted by the servo test case. The \codeword{Boards.h} library is ranked higher than \codeword{Servo.h} as it contains macro definitions for variables such as \codeword{MAX_SERVOS} for many different types of board (e.g. Arduino Mega, Primo etc.) and therefore the term ``servo'' appears many times, contributing to a higher \textbf{TF-IDF} rank. A potential improvement to the ranking heuristic would also take file size into account e.g. consider the proportion of the file containing the term ``servo'' as opposed to the raw count.
 
-\subsection{Parallax Source Code Analysis Test Cases}
+\subsection{Parallax Source Code Analysis Test Cases} \label{pscatc}
 The expected behaviour for code generation is:
 \begin{itemize}
 \item Parallax library include statements \textit{are not} present in the output
@@ -816,14 +816,17 @@ The expected behaviour for code generation is:
 \item Code from the main method outside of the \codeword{while(1)} loop in the input is copied to a \codeword{setup()} method in the output
 \item Code from the \codeword{while(1)} loop in the input is copied to the \codeword{loop()} method of the output
 \item Any other methods defined in the input are copied to the output
+\item Global variables in the input are copied to the output
 \end{itemize}
-The test case in Section \ref{parallax_tc1} checks that the Parallax source code analysis component generates code as expected. This is followed by a discussion of the results in Section \ref{parallax_test_discussion}.
+The test case in Section \ref{parallax_tc1} checks that the Parallax source code analysis component generates code as expected.
 
 \subsubsection{Test Case 1} \label{parallax_tc1}
 \begin{description}
-\item[Description:] The input source code contains a mixture of Parallax library methods and other functions. This test case checks that empty methods are only generated for the Parallax library methods and no include statements are copied across.
+\item[Description:] The input source code contains a mixture of Parallax library methods and other functions as well as global variables, user-defined methods and include statements for non-Parallax libraries. This test case checks all the criteria for a successful migration (as discussed in Section \ref{pscatc}) are met.
 \item[Input:] The source code in Appendix \ref{ir_hum_parallax_in}.
-\item[Expected Output:] Methods generated with the following signatures:
+\item[Expected Output:] 
+\begin{enumerate}
+\item Methods generated with the following signatures:
 \begin{itemize}
 \item \codeword{void drive_setRampStep(int stepsize)}
 \item \codeword{void drive_rampStep(int left, int right)}
@@ -835,21 +838,23 @@ The test case in Section \ref{parallax_tc1} checks that the Parallax source code
 \item \codeword{int dht22_getTemp(char temp_units)}
 \item \codeword{int dht22_getHumidity()}
 \end{itemize}
-No include statments in output.
+\item Only \codeword{stdio.h} include in output.
+\item The global variables \codeword{int irLeft, irRight;}; \codeword{int humPin = 6;}; \codeword{int ledPin = 8;} and \codeword{float humThresh = 25.0;} are present in the output.
+\item The statements \codeword{low(26);}; \codeword{low(27);} and \codeword{drive_setRampStep(12);} are included in the \codeword{setup()} method of the output. 
+\item All other statements in the main method of the input are in the \codeword{loop()} method of the output. 
+\item The \codeword{myPrintf} method from the input is copied to the output.
+\end{enumerate}
 \item[Actual Output:] See Appendix \ref{parallax_tc1_out}.
 \item[Result:] Test case passed.
 \end{description}
 
-\subsubsection{Discussion} \label{parallax_test_discussion}
-%TODO: discuss
-
 \section{Case Studies} \label{eval_case_studies}
-%TODO: add intro
-\subsection{Case Study 1 (CS-1)} \label{cs1}
-Figure \ref{fig:ir_hum_diagram} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{ir_hum_parallax_in}, \ref{ir_hum_netlist} and \ref{cs1_out} respectively.
+The following case studies are used to evaluate whether the requirements set out in Chapter \ref{req_gathering} have been met. The first case study in Section \ref{cs1} demonstrates the operation of the system when provided with correct inputs and is used to evaluate requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4. The second and third case studies (in sections \ref{cs2} and \ref{cs3}) are used to evaluate the system when there are errors in the migration process. These case studies are used to evaluate requirements F-3 and F-4 respectively. A summary of the results of these case studies along with the corresponding requirements are contained in tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results}.
 
-% TODO: update the case study now fritz/arduino/parallax analysis moved earlier - can ref unit tests
-\subsubsection{Description}
+\subsection{Case Study 1 (CS-1)} \label{cs1}
+Figure \ref{fig:ir_hum_diagram} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{ir_hum_parallax_in}, \ref{ir_hum_netlist} and \ref{cs1_out} respectively. For this case study, the correct functioning of the Fritzing netlist analysis, Arduino libraries suggestion and Parallax source code analysis components have been evaluated in the earlier sections \ref{fritz_tc3}, \ref{arduino_tc2}/\ref{arduino_tc3} and \ref{parallax_tc1} respectively. The migrated code (i.e. the output code from the system with manual additions) is shown in Appendix \ref{cs1_migrated}.
+
+\subsubsection{Description} \label{cs1_description}
 The source code and circuit uses infrared receivers/LEDs to detect and move around its surroundings using servo motors. Periodically, a humidity reading is taken from the humidity/temperature sensor. If this is above some threshold, an LED lights up. When connected to a computer, the humidity and temperature readings can be displayed to the console. Since Parallax only supports a subset of C, in order to write to the console a function myPrintf is defined in the source code. This performs the same function as the standard libraries' printf.
 
 This case study is used to demonstrate the migration of code for components that require different complexities of mapping between the source and target platforms. Firstly, it is fairly simple to map between the libraries for the humidity and temperature sensor. 
@@ -896,25 +901,10 @@ servoRight.writeMicroseconds(1600);
 delay(20); 
 \end{verbatim}
 
-\subsubsection{Discussion/Analysis}
-
-\begin{description}
-\item[Fritzing netlist analysis:] 
-%TODO delete
-The migration process was able to generate the correct pins for the input netlist. From \ref{fig:cs1} the following pins should be generated:
-
-Figure \ref{fig:cs1_gen_pins} shows the generated variables in the output code.  
-
-\item[Arduino library suggestions:]
-%TODO delete
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.7\linewidth]{graphics/selection_options.png}
-  \caption{Top suggestions for key sensors in CS-1.}
-  \label{fig:selection_options}
-\end{figure}
-\item[Generated code:]
-Two types of compile-time errors were present in the generated output from the migration system. Firstly, a macro definition from the Parallax \codeword{dht22} library (\codeword{CELSIUS}) caused an error as it was not defined in the generated output (see Figure \ref{fig:celsius_error}). Additionally there was no indication that this variable needed to be replaced in the generated code.
+\subsubsection{Analysis}
+Firstly, the system was successful in demonstrating that, provided with correct inputs, it is able to generate code (i.e. Appendix \ref{cs1_out}) that with manual additions (i.e. Appendix \ref{cs1_migrated}) can be run on the target platform, consequently satisfying requirement S-1.
+ 
+Two types of compile-time errors were present in the generated output (see Appendix \ref{cs1_out}) from the migration system. Firstly, a macro definition from the Parallax \codeword{dht22} library (\codeword{CELSIUS}) caused an error as it was not defined in the generated output (see Figure \ref{fig:celsius_error}). Other than this compile time error, there was no indication that this variable needed to be replaced in the generated code which is in conflict with requirements S-4/F-5. However, other than this small issue, the methods that needed to be completed were clearly marked.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.7\linewidth]{graphics/celsius_error.png}
@@ -939,21 +929,27 @@ The second type of compile-time error is due to no return types as can be seen i
   \caption{Compile error due to no return.}
   \label{fig:return_type_error}
 \end{figure}
-\item[Manual adaptation/deployment on Arduino:] %TODO
-\end{description}
 
-%TODO: analysis of migration - incl reference to tables to say they indicate results
-%TODO: add results in table (e.g. tick and state satisfied because of CS-1)
+As these errors were resolved with the manual additions required for migration, it was demonstrated that requirement F-2 was satisfied and the code in Appendix \ref{cs1_migrated} was able to be deployed on the Arduino without errors.
 
-\subsection{Case Study 2 (CS-2)}
-%TODO: case study to eval F-3
+The size of the Parallax source code was 1,506 bytes compared to 2,156 bytes for the generated code and 2,922 bytes for the manually completed code. As such, the migrated code is roughly twice the size of the input. However, some unused functions have been left in the migrated code for demonstration purposes so the migrated code could be made smaller. It should be expected that there will be a constant factor increase in the size of the migrated code since empty methods are generated for each of the Parallax library functions in the source code. In the worst case, each line of the input will make use of a Parallax library function, requiring three generated lines of code in the output (method declaration; TODO statement; closing bracket). There may also be additional lines added for generated pin variables and target platform include statements. However, the size of these additions is likely to be small compared to the size of generated methods. Therefore, an upper bound on the generated code (without manual additions) is 3L where L is the number of lines in the input. For most cases this would be an acceptable increase in size and so NF-3 is satisfied. However, of course this depends on the requirements for the particular application. Furthermore, the size of the output depends on the mappings between library functions for the source and target platforms. For example, I found that to perform the same functionality using Arduino libraries tends to require more lines of code since setup is generally made more explicit than when using Parallax libraries (e.g. consider the servo code in Section \ref{cs1_description}). As such, it may be expected that programs rewritten directly for the target platform may be larger anyway without the use of this migration system.
 
-\subsection{Case Study 3 (CS-3)}
-%TODO: case study to eval F-4
+Based on an inspection of the application run on both the source and target platforms, there was no perceptible difference in performance and so requirements S-5/NF-4 are satisfied. The only potential reduction in performance (other than platform differences) could come from the use of additional method calls from the generated methods. However, compilers optimized for speed can inline functions in this case so that this does not occur. Otherwise, the difference is likely to be negligible unless there is a cache miss \parencite{function_call_performance}. Other than this, differences in performance are likely to be much more dependent on the efficiency of the corresponding platform libraries and the hardware specifications for the microcontrollers themselves.
+
+Between the source and target applications there are some minor differences in behaviour because of the differences in libraries. For example, the servos do not accelerate when running the code on the Arduino as they do on the Parallax board since there is no equivalent function in the Arduino libraries (see Section \ref{cs1_description}). Other than this, from manual inspection, the migrated code performs the same functionality as the source code (i.e. using infrared LEDs/receivers to maneuver and periodically take humidity/temp. readings etc.) and so requirement F-1 is met.
+
+Overall, with some minor exceptions, this case study has demonstrated that requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4 have been met.
+
+\subsection{Case Study 2 (CS-2)} \label{cs2}
+%TODO: case study to eval F-3 (display errors when source code can't be migrated)
+
+\subsection{Case Study 3 (CS-3)} \label{cs3}
+%TODO: case study to eval F-4 (indicate errors during migration process)
 
 \section{Evaluation of Modifiability} \label{eval_modifiability}
 %TODO: discuss how design of system supports modification
 
+%TODO: add results in table (e.g. tick and state satisfied because of CS-1)
 \newgeometry{left=3cm,bottom=2cm, top=3cm, right=2.5cm, footskip=0.2cm}
 \begin{landscape}
 \begin{table*}[h!]\centering
@@ -1000,6 +996,8 @@ The second type of compile-time error is due to no return types as can be seen i
 \subsection{Current Issues}
 \section{Limitations} \label{eval_limits}
 %TODO: complete limitations - internal, external, construct, conclusion validity
+
+
 \chapter{Conclusion}
 %TODO
 %TODO discuss effort of testing
@@ -1007,6 +1005,7 @@ The second type of compile-time error is due to no return types as can be seen i
 %TODO: ranking libs -> larger libraries more likely to be ranked higher e.g. boards.h has many references to servos because it contains defs for each board
 %TODO: copy across comments for methods stubs -> otherwise have to lookup what function does
 %TODO: migrate between classes and typedefs
+
 \printbibliography
 
 \begin{appendices}
