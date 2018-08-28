@@ -91,13 +91,24 @@ MDSM is a promising approach as it has already been proved feasible in industry 
 The Defence Science and Technology Laboratory (DSTL) at the Ministry of Defence (MoD) have identified several instances of software obsolescence they would like to tackle. A problem of particular interest is ``the migration of an entire software system from a legacy hardware platform to a modern more powerful platform'' \parencite{gerasimou2017technical}. This report will explore how MDSM processes can be used to partially automate the migration of code between microprocessors. A case study implementing the migration of code between a Parallax Propeller Activity Board and an Arduino Uno will be used to demonstrate the approach developed.
  
 \section{Project Goals}
-TODO
-\section{Project Scope}
-TODO
-\section{Report Structure}
-TODO
+\begin{itemize}
+\item Create a system that is able to support the migration of source code from one platform to another for a particular source-target platform pair.
+\item Implement the system as an Eclipse plugin to improve usability.
+\item Design the system such that it is easily modifiable to support migration between alternative platforms.
+\item Evaluate the success of the system in supporting code migration.
+\end{itemize}
 
-\chapter{Literature Review}
+\section{Project Scope}
+\begin{itemize}
+\item The system will only support the migration of software from a Parallax Propeller Activity Board to an Arduino Uno.
+\item The system will be considered successful if it is shown to work for a case study of reasonable complexity. Due to the time constraints of the project, it is not expected that the system will work for all cases.
+\end{itemize}
+
+\section{Report Structure}
+The project report begins with an overview of MDE techniques and the existing research into software obsolescence solutions in Chapter \ref{lit_review}. This chapter also contains an introduction to the approach used to tackle software obsolescence in this project as well as an overview of the platforms for which the system will aid in software migration. This is followed by
+a discussion of the software development methodology used for the project in Chapter \ref{meth_chapt}. Chapter \ref{reqs} summarises the requirements for the project as well as the elicitation method. The design and implementation of the system is contained in Chapter \ref{design_and_impl} and is evaluated in Chapter \ref{eval_chapt}. Finally, the success  of the project and areas for future work are discussed in Chapter \ref{conc}.
+
+\chapter{Literature Review} \label{lit_review}
 The following chapter introduces the existing work on software obsolescence and the technical background required to understand this project. It begins with an overview of the existing approaches for software obsolescence mitigation in Section \ref{so_approaches} and in particular, MDE-based strategies in Section \ref{mde_approaches}. The specific problem of migration between microcontrollers and the existing methods for facilitating this are discussed in Section \ref{mc_migration} as well as how the MDSM-based method explored in this project is related. 
 
 Sections \ref{mde_bg} and \ref{mc_bg} contain the technical background of the project including a brief overview of MDE and the chosen framework for this project as well as a description of the microcontrollers used for the case study.
@@ -291,7 +302,7 @@ The key features of the Arduino Uno are \parencite{arduinospec}:
 \item 6 analog input pins
 \end{itemize}
 
-\chapter{Methodology}
+\chapter{Methodology} \label{meth_chapt}
 This section summarises the methodology and tools used for managing this project. It begins with an overview of project management methodologies in Section \ref{overview_meth} and discusses the methodology chosen for this particular project in Section \ref{choice_meth}. Finally, the tools used for project management are discussed in Section \ref{proj_mgmt}.
 
 \section{Overview of Methodologies} \label{overview_meth}
@@ -674,17 +685,17 @@ Additionally, due to time limitations the config file used for the Fritzing netl
 % TODO: no backup for config file
 %TODO: *** only migrates methods ->
 
-\chapter{Evaluation}
-This chapter aims to evaluate the software migration system against the requirements set out in Chapter \ref{req_gathering}. Section \ref{test_plan} outlines how this will be achieved followed by Sections \ref{test_cases}-\ref{eval_modifiability} describing the actual testing performed.
+\chapter{Evaluation} \label{eval_chapt}
+This chapter aims to evaluate the software migration system against the requirements set out in Chapter \ref{reqs}. Section \ref{test_plan} outlines how this will be achieved followed by Sections \ref{test_cases}-\ref{eval_modifiability} describing the actual testing performed.
 
-Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise the results of the evaluation against the corresponding requirements. For each requirement from Chapter \ref{req_gathering} they indicate whether this requirement was met and include in the comments column which test case(s) or other analysis prove this is the case.
+Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise the results of the evaluation against the corresponding requirements. For each requirement from Chapter \ref{reqs} they indicate whether this requirement was met and include in the comments column which test case(s) or other analysis prove this is the case.
 
 Finally, Sections \ref{test_summary} and \ref{eval_limits} summarise the testing and discuss the limitations of the project respectively.
 
 \section{Test Plan} \label{test_plan}
 The software migration system consists of three main components: Fritzing Netlist Analysis, Arduino Libraries Analysis and Parallax Source Analysis. Each of these components works independently of the others to generate outputs used by the Code Generation EGL transform. As such, each component can be tested separately to ensure the correct outputs are produced. Section \ref{test_cases} outlines the test cases used for this part of the evaluation.
 
-The full system must then be evaluated against the requirements in Chapter \ref{req_gathering}. Case studies in Section \ref{eval_case_studies} are used to evaluate whether all requirements except S-2, NF-1 and NF-2 are met.
+The full system must then be evaluated against the requirements in Chapter \ref{reqs}. Case studies in Section \ref{eval_case_studies} are used to evaluate whether all requirements except S-2, NF-1 and NF-2 are met.
 
 The requirements S-2, NF-1 and NF-2 concern the modifiability of the system. These requirements and whether they have been met are discussed in Section \ref{eval_modifiability}.
 	
@@ -856,7 +867,7 @@ The test case in Section \ref{parallax_tc1} checks that the Parallax source code
 \end{description}
 
 \section{Case Studies} \label{eval_case_studies}
-The following case studies are used to evaluate whether the requirements set out in Chapter \ref{req_gathering} have been met. The first case study in Section \ref{cs1} demonstrates the operation of the system when provided with correct inputs and is used to evaluate requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4. The second and third case studies (in sections \ref{cs2} and \ref{cs3}) are used to evaluate the system when there are errors in the migration process. These case studies are used to evaluate requirements F-3 and S-3/F-4 respectively. A summary of the results of these case studies along with the corresponding requirements are contained in tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results}.
+The following case studies are used to evaluate whether the requirements set out in Chapter \ref{reqs} have been met. The first case study in Section \ref{cs1} demonstrates the operation of the system when provided with correct inputs and is used to evaluate requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4. The second and third case studies (in sections \ref{cs2} and \ref{cs3}) are used to evaluate the system when there are errors in the migration process. These case studies are used to evaluate requirements F-3 and S-3/F-4 respectively. A summary of the results of these case studies along with the corresponding requirements are contained in tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results}.
 
 \subsection{Case Study 1 (CS-1)} \label{cs1}
 Figure \ref{fig:ir_hum_diagram} shows the Fritzing diagram for the target platform in CS-1. The source code, Fritzing netlist and generated code for this case study can be viewed in Appendices \ref{ir_hum_parallax_in}, \ref{ir_hum_netlist} and \ref{cs1_out} respectively. For this case study, the correct functioning of the Fritzing netlist analysis, Arduino libraries suggestion and Parallax source code analysis components have been evaluated in the earlier sections \ref{fritz_tc3}, \ref{arduino_tc2}/\ref{arduino_tc3} and \ref{parallax_tc1} respectively. The migrated code (i.e. the output code from the system with manual additions) is shown in Appendix \ref{cs1_migrated}.
@@ -982,7 +993,7 @@ These decisions support requirements S-2/NF-1 and items 2/4 support requirement 
 \section{Test Summary} \label{test_summary}
 The tests in Section \ref{test_cases} demonstrate that the three main components of the system (Fritzing netlist analysis, Arduino library suggestions and Parallax source code analysis) work as expected.
 
-Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise, based on the results from the case studies in Section \ref{eval_case_studies}, whether each of the requirements set out in Chapter \ref{req_gathering} was met. Note that in table \ref{table:case_study_func_test_results} the headings ``Priority'' and ``Satisfied'' have been shortened to S and P respectively to more easily display the table. A \checkmark \ symbol indicates the requirement was met and a \xmark \ indicates it wasn't. A $^*$ next to a checkmark indicates the requirement has been satisfied with some minor exception which will be mentioned in the corresponding ``Comments'' column of the table.
+Tables \ref{table:case_study_sys_test_results} and \ref{table:case_study_func_test_results} summarise, based on the results from the case studies in Section \ref{eval_case_studies}, whether each of the requirements set out in Chapter \ref{reqs} was met. Note that in table \ref{table:case_study_func_test_results} the headings ``Priority'' and ``Satisfied'' have been shortened to S and P respectively to more easily display the table. A \checkmark \ symbol indicates the requirement was met and a \xmark \ indicates it wasn't. A $^*$ next to a checkmark indicates the requirement has been satisfied with some minor exception which will be mentioned in the corresponding ``Comments'' column of the table.
 These tables show that the majority of requirements have been met. In particular, all of the high priority (M/Must) requirements have been met aside from some minor exceptions. The remaining issues with the system are summarised in Section \ref{current_issues} below.
 
 \subsection{Current Issues} \label{current_issues}
@@ -1037,7 +1048,7 @@ These tables show that the majority of requirements have been met. In particular
 
 \restoregeometry
 
-\chapter{Conclusion}
+\chapter{Conclusion} \label{conc}
 %TODO
 %TODO discuss effort of testing
 %TODO: further work - analyze includes to map between libraries e.g. "abdrive.h" -> "Servo.h"
