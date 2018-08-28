@@ -941,10 +941,26 @@ Between the source and target applications there are some minor differences in b
 Overall, with some minor exceptions, this case study has demonstrated that requirements S-1, S-4, S-5, F-1, F-2, F-5, NF-3 and NF-4 have been met.
 
 \subsection{Case Study 2 (CS-2)} \label{cs2}
-%TODO: case study to eval F-3 (display errors when source code can't be migrated)
+This case study is used to evaluate whether the requirement F-3 is met (i.e. the system displays appropriate errors when the source code cannot be migrated). The input to the system is shown in Appendix \ref{cs2_input}. This is a subset of the input code from CS-1 but without the required include statements and so the source code displays many compile-time errors. Based on F-3, the system should indicate that the migration of this file is not possible. However, no errors are thrown and the code in Appendix \ref{cs2_output} is produced. Therefore, requirement F-3 has not been met.
 
 \subsection{Case Study 3 (CS-3)} \label{cs3}
-%TODO: case study to eval F-4 (indicate errors during migration process)
+This case study is used to evaluate whether the requirement F-4 is met (i.e. the system clearly indicates any errors that have occurred during its use). The inputs to the system are the same as CS-1 (i.e. the source code is as contained in Appendix \ref{ir_hum_parallax_in} and the netlist is the same as Appendix \ref{ir_hum_netlist}). However, an empty config file is used meaning any attempts to look up part types or previously used libraries will fail. 
+
+When the system is run, the errors shown in Figures \ref{fig:cs3_output_1} and \ref{fig:cs3_output_2} are thrown. 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1\linewidth]{graphics/cs3_output_1.png}
+  \caption{First error thrown when performing migration using empty config file.}
+  \label{fig:cs3_output_1}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1\linewidth]{graphics/cs3_output_2.png}
+  \caption{Second error thrown when performing migration using empty config file.}
+  \label{fig:cs3_output_2}
+\end{figure}
+
+With knowledge of the project, this has occurred because the second page of the Eclipse wizard (i.e. MigrationWizardPageTwo) uses the config file to find which parts of the input netlist need a library suggestion UI generating. However, without this understanding, it is not at all clear that an empty config file has caused this error. Therefore, requirement F-4 has not been met. 
 
 \section{Evaluation of Modifiability} \label{eval_modifiability}
 %TODO: discuss how design of system supports modification
@@ -1028,6 +1044,9 @@ Overall, with some minor exceptions, this case study has demonstrated that requi
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Migrated Code}\label{cs1_migrated}]{graphics/ir_humidity_sensors_migrated.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_migrated.pdf}
+
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-2 Input}\label{cs2_input}]{graphics/cs2_input.pdf}
+\includepdf[pages=1,scale=0.75, pagecommand=\section{CS-2 Output}\label{cs2_output}]{graphics/cs2_output.pdf}
 
 
 \end{appendices}
