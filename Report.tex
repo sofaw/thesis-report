@@ -173,7 +173,7 @@ The RMA approach follows the same stages as that used by Sodifrance. The DTA app
   \label{fig:dta}
 \end{figure}
 
-The feasibility of both approaches was demonstrated by a case study migrating from Java 1.4 and the Hibernate 2.x framework to Java 1.5 and Hibernate 3.x. Based on qualitative analysis of the two approaches, they recommend to use an approach similar to DTA as it is often not the case that a transformation from the legacy code model to the PIM will exist. It is especially suited to cases where the code model and application model use the same metamodel. 
+The feasibility of both approaches was demonstrated by a case study migrating from Java 1.4 and the Hibernate 2.x framework to Java 1.5 and Hibernate 3.x. Based on qualitative analysis of the two approaches, they recommend to use an approach similar to DTA as often, a transformation from the legacy code model to the PIM will not exist. It is especially suited to cases where the code model and application model use the same metamodel. 
 
 MDE approaches to software migration have many benefits. The primary reason is the ability to automate some of the stages in the migration process, consequently reducing the cost and time scale of projects. Secondly, parts of the process (e.g. model discoverers or transformations) can be reused between different migration projects which will again cut the cost of migration.
 
@@ -193,7 +193,7 @@ As mentioned previously, a particular problem of interest to the MoD is ``the mi
 
 Atmel addressed the issue of migrating code between microcontrollers by reducing the learning curve for developers moving from development on 8-bit to 32-bit platforms. They aimed to achieve this by providing powerful debug facilities and development tools similar to established 8-bit development platforms \parencite{wilbrink2004facilitating}.
 
-Although this strategy should reduce the migration effort, the code will still be have to be migrated manually which is error-prone and difficult. Additionally, the development of new tools adds extra overhead to the project, although these tools are reusable between projects.
+Although this strategy should reduce the migration effort, the code will still have to be migrated manually which is error-prone and difficult. Additionally, the development of new tools adds extra overhead to the project, although these tools are reusable between projects.
 
 Another approach for migrating code between microprocessors combines code analysis, code-based transformations and verification/validation techniques \parencite{gerasimou2017technical}. The procedure follows the following steps:
 \begin{description}
@@ -207,9 +207,9 @@ Another approach for migrating code between microprocessors combines code analys
 \end{description}
 This method was demonstrated to succeed in partially automating the migration of software between an Arduino and Raspberry Pi.
 
-By automating some of the migration stages, the overall time and cost of software modernisation should be reduced. Another benefit is that the code analysis stages allow for potential risks to be detected early on. However, there is still a lot of manual effort required for migrating between libraries and in particular, generating mapping rules requires a developer with a strong understanding of both the new and obsolete libraries. Another issue is that adding the abstraction layer could lead to a large increase in the size of the code if the obsolete libraries are used frequently. This could make the code more difficult to maintain.
+By automating some of the migration stages, the overall time and cost of software modernisation should be reduced. Another benefit is that the code analysis stages allow for potential risks to be detected early on. However, there is still a lot of manual effort required for migrating between libraries and in particular, generating mapping rules requires a developer with a strong understanding of both the new and obsolete libraries.
 
-My project aims to explore an alternative approach for migrating code between microcontrollers by applying an MDE approach similar to that discussed in Section \ref{mde_approaches}. In doing so I aim to be able to (partially) automate the migration process, consequently reducing the time taken for migration whilst also avoiding issues associated with other methods such as code blow-up in \parencite{gerasimou2017technical}.
+My project aims to explore an alternative approach for migrating code between microcontrollers by applying an MDE approach similar to that discussed in Section \ref{mde_approaches}. In doing so I aim to be able to (partially) automate the migration process, consequently reducing the time taken for migration.
 
 \section{Model Driven Engineering} \label{mde_bg}
 Model Driven Engineering (MDE) was developed in order to address complexity within the problem space of computing. In the past, approaches for enabling programmers to develop code more easily have focused on simplifying the solution space. This was achieved by providing abstractions such as higher-level programming languages or providing operating systems to manage the difficulty of programming hardware directly. However, these solutions are unable to express domain concepts effectively, unlike MDE techniques \parencite{schmidt2006model}. Furthermore, it has been found that MDE can also be utilised in automating the software development process \parencite{bezivin2004search}.
@@ -464,7 +464,7 @@ Figure \ref{fig:high_level_overview} shows the high-level architecture of the sy
   \label{fig:fritz_graph}
 \end{figure}
 
-Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transform and used to generate pin variables in the output file.
+Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a config file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transform and is used to generate pin variables in the output file.
 
 \begin{figure}[h!]
   \centering
@@ -568,7 +568,6 @@ To find out which pins of the board parts in the circuit are connected to, a mod
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-% TODO: test assumption about only one component to each pin/ -> edit caption on first algorithm
 
 \section{Arduino Library Analysis}
 \begin{figure}[h!]
@@ -585,22 +584,21 @@ The Arduino Library Analysis component is used to suggest target platform librar
 \item[Config:] The config. file stores information about the previously used libraries for a given part. Whenever a library is chosen for a given part, the config file is updated with this choice. 
 \end{description}
 
-The Library Selection UI combines the library suggestions and displays them to the user. Once the choices have been made, it also coordinates the update of the config file and passes on the library choices to the Code Generation EGL transform. As the only information passed to the Code Generation transform is a list of libraries, there is no separate EOL file used in this component unlike in the Fritzing netlist analysis component (e.g. the Pin Gen. Queries in Figure \ref{fig:fritzing_analysis}).
+The Library Selection UI combines the information from the Library Ranker component and config file and displays library suggestions to the user. Once the choices have been made, it also coordinates the update of the config file and passes on the library choices to the Code Generation EGL transform. As the only information passed to the Code Generation transform is a list of libraries, there is no separate EOL file used in this component unlike in the Fritzing netlist analysis component (e.g. the Pin Gen. Queries EOL file in Figure \ref{fig:fritzing_analysis}).
 
 As these library suggestion sub-components are logically independent, they have been separated to improve modifiability and reusability. Furthermore, the use of the config handler between the library selection UI and the config file abstracts away from the format of this file. This makes it easier to modify this subcomponent. For example, changing the format of the config file will not require a change in the library selection UI.
 
-The config file is shared with the Fritzing Netlist analysis component of the system. Although this increases coupling between the components, it prevents duplication of information and therefore seemed suitable in this case.
-
-\subsection{Implementation}
+The config file is shared with the Fritzing Netlist analysis component of the system. Although this increases coupling between the components, it prevents duplication of information and therefore is a suitable solution in this case.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.8\linewidth]{graphics/lib_selection_ui.png}
+  \includegraphics[width=0.6\linewidth]{graphics/lib_selection_ui.png}
   \caption{How the library suggestions are displayed to the user.}
   \label{fig:lib_selection_ui}
 \end{figure}
 
-Figure \ref{fig:lib_selection_ui} demonstrates how the library suggestions are displayed to the user. For each part in the netlist, a scrollable checklist allows users to select the appropriate library. The libraries are displayed based on the ranking provided by the Library Ranker component. The highlighted libraries are those that have previously been chosen for that part (as recorded by the config file).
+\subsection{Implementation}
+Figure \ref{fig:lib_selection_ui} demonstrates how the library suggestions are displayed to the user. For each part in the netlist, a scrollable checklist allows users to select the appropriate library (or libraries). The libraries are displayed based on the ranking provided by the Library Ranker component. The highlighted libraries are those that have previously been chosen for that part (as recorded by the config file).
 
 \subsubsection{Library Ranker} \label{lib_ranker}
 Given a part name and the Arduino library header files, the Library Ranker component calculates a ranking for the suitability of each library. The ranking is treated as an information retrieval task based on the part name. In other words, the Arduino libraries' header files are ranked based on similarity to the part's name. This makes the assumption that the most suitable library for a part will make some reference or include similar terms to the part's name. Although this is not intended to be an exact recommendation, it provides a useful heuristic for library suggestion.
@@ -634,9 +632,11 @@ The config file stores the name of libraries chosen for each part as well as the
 \subsection{Design}
 For a similar reason as in the Fritzing netlist analysis component, the information extracted in the Parallax project analysis stage is coordinated by an EOL file that is used by the Code Generation EGL transform. 
 
-The logic contained in the Parallax Dependency Resolver Java code could have been implemented in the Parallax Queries EOL file. However, it would have been much more difficult to write. As such, a Java class encapsulating the required logic was created. This class is added to a plugin setup as in \parencite{eol_tool} so that it can be accessed from EOL as a Native type.
+The logic contained in the Parallax Dependency Resolver Java code could have been implemented in the Parallax Queries EOL file. However, it would have been much more difficult to write. As such, a Java class encapsulating the required logic was created. This class is added to a plugin (setup as in \parencite{eol_tool}) so that it can be accessed from EOL as a Native type.
 
 The Eclipse CDT Project provides a fully functional C and C++ Integrated Development Environment based on the Eclipse platform \parencite{eclipse_cdt}. The CDT Driver extends the Eclipse CDT Project, adding C/C++ support to the Epsilon framework (e.g. by providing support for C/C++ models) \parencite{cdt_driver}. These projects are used to support the analysis of the Parallax project.
+
+Initially, the intention for this component was to follow a more similar approach to those discussed in Section \ref{mde_approaches}. Following this design, a model of the Parallax project would be extracted conforming to some custom metamodel representing the important aspects of the project. A model transformation would then be applied to this model to generate the code for the target platform. However, given the timescale of the project, devising a suitable metamodel and code-to-model transformation would be infeasible. Therefore, the decision was made to query the AST (extracted using the CDT tools) directly.
 
 \subsection{Implementation}
 \begin{figure}[h!]
@@ -646,7 +646,7 @@ The Eclipse CDT Project provides a fully functional C and C++ Integrated Develop
   \label{fig:ast_diagram}
 \end{figure}
 
-CDT contains two parsers, for C and C++, which are able to generate an abstract syntax tree (AST) from source code \parencite{cdt_parsing}. Figure \ref{fig:ast_diagram} shows a partially expanded AST (more information on the structure of the AST can be found at \parencite{ast_structure}). The AST is generated for the input Parallax project and this is analysed to determine which constructs are part of Parallax libraries. These are then annotated in the generated code so that they can easily be replaced with equivalent functionality from the Arduino libraries. For example, functions from Parallax libraries are replaced with empty methods in the output file of the system. TODO directives within these empty methods make it clear they should be manually implemented. Figure \ref{fig:gen_stub} shows an example of a generated method.
+CDT contains two parsers, for C and C++, which are able to generate an abstract syntax tree (AST) from source code \parencite{cdt_parsing}. Figure \ref{fig:ast_diagram} shows a partially expanded AST (more information on the structure of the AST can be found at \parencite{ast_structure}). The AST is generated for the input Parallax project and this is analysed to determine which function calls are part of Parallax libraries. These are then annotated in the generated code so that they can easily be replaced with equivalent functionality from the Arduino libraries. For example, functions from Parallax libraries are replaced with empty methods in the output file of the system. TODO directives within these empty methods make it clear they should be manually implemented. Figure \ref{fig:gen_stub} shows an example of a generated method.
 
 \begin{figure}[h!]
   \centering
@@ -655,21 +655,21 @@ CDT contains two parsers, for C and C++, which are able to generate an abstract 
   \label{fig:gen_stub}
 \end{figure}
 
-The constructs from Parallax libraries are identified as follows. The ParallaxDependencyResolver class extends the ASTVisitor class. This class implements the visitor design pattern and is the recommended method for traversing the AST based on \parencite{cdt_parsing}. This class is used to visit each $IASTNode$ in the AST (each construct in Figure \ref{fig:ast_diagram} is an $IASTNode$) and determine whether it belongs to a Parallax library. To determine whether a node  is declared/defined in within a Parallax library the following analysis is performed:
+The methods defined in Parallax libraries are identified as follows. The ParallaxDependencyResolver class extends the ASTVisitor class\footnote{This class implements the visitor design pattern and is the recommended method for traversing the AST based on \parencite{cdt_parsing}.}.  This class is used to visit each \codeword{IASTNode} in the AST (each element of the AST in Figure \ref{fig:ast_diagram} is an \codeword{IASTNode}) by calling \codeword{accept} on the root. When a node is visited, if it is not an instance of an \codeword{IASTFunctionCallExpression}, the node's children are visited. Otherwise, the following procedure is used to determine whether this function was defined in one of the Parallax libraries (and therefore needs replacing in the generated output):
 \begin{enumerate}
 \item The index is created for the project. This contains all the binding information for the project. Since creating the index is a time-consuming process requiring parsing all the project code, resolving the bindings and writing them to the index, the index is only created once.
-\item The $resolveBinding$ method is called on the $IASTName$ of the node. This returns an $IBinding$ instance.
-\item The $IBinding$ is used to look up the $IIndexName$ for any declaration/definition of the node in the index.
-\item The origin file can be found for this $IIndexName$. The file location is checked to see if it is contained within the directories containing the Parallax libraries. If so, it can be concluded that this node is part of a Parallax library and must be replaced in the output code.
+\item The \codeword{resolveBinding} method is called on the \codeword{IASTName} of the node. This returns an \codeword{IBinding} instance.
+\item The \codeword{IBinding} is used to look up the \codeword{IIndexName} for any declaration/definition of the node in the index.
+\item The origin file can be found for this \codeword{IIndexName}. The file location is checked to see if it is contained within the directories containing the Parallax libraries. If so, it can be concluded that this node is part of a Parallax library and must be replaced in the output code.
 \item If the node is determined to be part of the Parallax libraries, the declaration/definition of the node is collected.
 \end{enumerate}
 
-Once all the nodes have been processed, there will be a list of all the declarations/definitions that must be replaced in the output code. These are passed to the Code Generation EGL transform to create e.g. empty method stubs. Any other code is passed as is to the Code Generation EGL transform as is.
+Once all the nodes have been processed, there will be a list of all the declarations/definitions of methods that must be replaced in the output code. These are passed to the Code Generation EGL transform to create empty method stubs. Any other code is passed as is to the Code Generation EGL transform.
 
 \section{Limitations}
 This project is intended to be a proof-of-concept rather than a perfect implementation. As such, there are a few limitations in the approach which will be discussed below.
 
-One of the main limitations of the system is the LibraryRanker for suggesting suitable Arduino libraries. Firstly, there's no guarantee that the Fritzing part names will actually be useful in searching for suitable libraries. For example, in Figure \ref{fig:lib_selection_ui} the name of the first part is shown as ``TSOP312.., 314..'' (this is actually an infrared receiver) - this doesn't give any indication of what the part is for and is unlikely to appear in any libraries as method names or in comments. Therefore, the suggestions for this part will be poor. However, it does provide a useful heuristic and creating a more accurate library suggestion system could easily be another project in itself and would therefore be infeasible in the time frame.
+One of the main limitations of the system is the LibraryRanker for suggesting suitable Arduino libraries. Firstly, there's no guarantee that the Fritzing part names will actually be useful in searching for suitable libraries. For example, in Figure \ref{fig:lib_selection_ui} the name of the first part is shown as ``TSOP312.., 314..'' (this is actually an infrared receiver) - this doesn't give any indication of what the part is for and is unlikely to appear in any libraries as method names or in comments. Therefore, the suggestions for this part will be poor. However, it does provide a useful heuristic and could easily be replaced with a more accurate library suggestion system given more time.
 
 Another limitation is the assumption that the netlist input to the system is valid. For example, that the provided netlist is for a valid circuit and that it matches the configuration of the board that the generated code is intended to run on. As there is no easy way to check the correctness of this input, this is again outside the scope of the project.
 
@@ -677,13 +677,7 @@ A further limitation with the Fritzing netlist analysis component is that there 
 
 Additionally, due to time limitations the config file used for the Fritzing netlist analysis component does not contain information for all the components available in Fritzing. However, it would be fairly easy (albeit time-consuming) to update this with a more comprehensive file.
 
-% TODO: assumption that there IS a mapping between libraries
-
-%TODO: pin generation queries doesn't handle case where >1 sensor is connected to a board pin;
-%TODO: would be easy to replace config w. hardcoded mapping between libs; no guarantee that previous library choices are reliable; no indication of how many times a library has previously been chosen;
-
-% TODO: no backup for config file
-%TODO: *** only migrates methods ->
+Finally, the system doesn't handle all Parallax library dependent constructs - only methods are migrated. For example, typedefs are not migrated. Based on the timescale of the project, the decision was made to focus on migrating function calls as these are the most frequently used platform-dependent construct. However, other source code elements could be migrated in a manner similar to functions.
 
 \chapter{Evaluation} \label{eval_chapt}
 This chapter aims to evaluate the software migration system against the requirements set out in Chapter \ref{reqs}. Section \ref{test_plan} outlines how this will be achieved followed by Sections \ref{test_cases}-\ref{eval_modifiability} describing the actual testing performed.
