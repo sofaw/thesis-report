@@ -638,7 +638,7 @@ The Eclipse CDT Project provides a fully functional C and C++ Integrated Develop
 
 Initially, the intention for this component was to follow a more similar approach to those discussed in Section \ref{mde_approaches}. Following this design, a model of the Parallax project would be extracted conforming to some custom metamodel representing the important aspects of the project. A model transformation would then be applied to this model to generate the code for the target platform. However, given the timescale of the project, devising a suitable metamodel and code-to-model transformation would be infeasible. Therefore, the decision was made to query the AST (extracted using the CDT tools) directly.
 
-\subsection{Implementation}
+\subsection{Implementation} \label{parallax_impl}
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\linewidth]{graphics/ast_diagram.png}
@@ -1043,12 +1043,22 @@ These tables show that the majority of requirements have been met. In particular
 \restoregeometry
 
 \chapter{Conclusion} \label{conc}
-%TODO
-%TODO discuss effort of testing
-%TODO: further work - analyze includes to map between libraries e.g. "abdrive.h" -> "Servo.h"
-%TODO: ranking libs -> larger libraries more likely to be ranked higher e.g. boards.h has many references to servos because it contains defs for each board
-%TODO: copy across comments for methods stubs -> otherwise have to lookup what function does
-%TODO: migrate between classes and typedefs
+Obsolescence is increasingly problematic for many technical projects, particularly in ``safety-driven'' domains with long project life-cycles where software/hardware often become non-procurable before the project is complete. Although hardware and software obsolescence have a similar impact on issues and costs in these projects, there has been much more research and success in dealing with the hardware obsolescence problem.
+
+This project aimed to build on existing research in dealing with the software obsolescence problem and in particular tackle the ``migration of an entire software system from a legacy hardware platform to a modern more powerful platform''. The developed system aids in the specific case of migrating code compatible with a Parallax Propeller Activity Board to an Arduino Uno in order to demonstrate a feasible approach to the more general problem of migrating between platforms. Based on the success of model-driven engineering practices to update legacy applications in industry, the system was designed to use these techniques.
+
+In the course of the project, three main components were developed. Firstly, a Fritzing netlist analysis component enabled a diagram of the circuit for the target platform to be supplied in order to calculate pin variables for the generated code. This component simplifies the migration process when the source and target platforms have functionally equivalent circuits using different pin configurations. Secondly, an Arduino library analysis component was produced in order to process the target platform libraries and suggest suitable replacements for the source platform libraries. This component helps simplify the manual procedure of mapping between libraries which is a particularly difficult task to automate. Finally, a Parallax source code analysis component enables the source platform dependent functions to be identified so that these can be replaced with empty method stubs in the generated code. This reduces the difficulty in mapping between source and target platform methods. From these components, a C file is generated that, with some manual modifications, is compatible with the target platform.
+
+Based on the evaluation of the system performed in Chapter \ref{eval_chapt}, the system was successful in supporting migration between the Parallax and Arduino platforms for a case study of reasonable complexity. Furthermore, the project has been designed in such a way that the individual components of the system can easily be modified/reused in supporting migration between different platforms.
+
+\section{Further Work}
+If work is continued on the project, the first areas to address are the issues found during the evaluation as summarised in Section\ref{current_issues}. Once these issues have been tackled the following avenues could be investigated for improving the functionality of the system:
+\begin{enumerate}
+\item As mentioned in Section \ref{parallax_impl}, only the methods from source platform libraries are migrated to the target platform. A top priority for future work would be making sure that all constructs (e.g. typedefs, macro definitions) from Parallax libraries are migrated. This can be achieved in a similar fashion to the method for migrating functions.
+\item As well as using the part names for identifying the mappings between source and target libraries, the source platform library names may provide a good indication of the libraries required for the target platform. For example, the library suggestions for the humidity and temperature sensor in Section \ref{arduino_tc3} were all related to humidity and temperature sensing but some of the more highly ranked libraries than the required \codeword{DHT.h} were not for the particular sensor in question e.g. the \codeword{Adafruit_HTU21DF.h} library. Since the Parallax \codeword{dht22.h} library is used in the source platform code, this would give a good indication that the \codeword{DHT.h} library is the most suitable in this case.
+\item When performing the manual aspect of the migration for the case study in Section \ref{cs1}, I found it difficult to determine what functionality the generated empty methods should be replaced with. A simple modification to the existing system would copy across any comments associated with the method in the source platform library in order to give a better indication of the functionality of the method. Consequently, this would make it easier to determine what functionality each migrated method should perform.
+\item Related to the previous suggestion, the source and target platform libraries could be analysed to determine suggested replacement methods (similarly to how replacement libraries are currently suggested) in order to further simplify the manual migration process. 
+\end{enumerate}
 
 \printbibliography
 
@@ -1067,7 +1077,7 @@ These tables show that the majority of requirements have been met. In particular
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Parallax Source Output}\label{parallax_tc1_out}]{graphics/parallax_test_case_1_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/parallax_test_case_1_out.pdf}
 
-\chapter{Case Studies} \label{case_studies}
+\chapter{Case Studies Inputs/Outputs} \label{case_studies}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Output}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Migrated Code}\label{cs1_migrated}]{graphics/ir_humidity_sensors_migrated.pdf}
