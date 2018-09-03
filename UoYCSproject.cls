@@ -146,6 +146,8 @@
 \renewcommand{\abstract}[1]{\newcommand{\UoYCSP@abstract}{#1}}
 \renewcommand{\endabstract}{}
 
+\newcommand{\statementofethics}[1]{\newcommand{\UoYCSP@statementofethics}{#1}}
+
 \let\old@dedication\dedication
 \newcommand*{\UoYCSP@dedication}{}
 \renewcommand*{\dedication}[1]{\renewcommand*{\UoYCSP@dedication}{#1}}
@@ -204,7 +206,7 @@
     }%
     %
     \ifacknowledgements%
-    { \vfill%
+    { %
       \normalsize%
       \begin{center}%
         \large\bfseries Acknowledgements%
@@ -212,8 +214,24 @@
       \UoYCSP@acknowledgements%
     }%
     \fi%
-    \vspace*{\fill}%
+    %
   }%
+  
+    \ifx\UoYCSP@statementofethics\undefined%
+    \ClassError%
+    {UoYCSproject}%
+    {No statement of ethics!}%
+    {Declare an soe in the preamble using \protect\statementofethics{Text}.}
+  \else%
+      \vfill
+      \begin{center}
+          \large\textbf{Statement of Ethics}
+      \end{center}    
+          \normalsize
+          \UoYCSP@statementofethics%
+  \fi%
+  \vfill
+  
   \cleardoublepage%
   \microtypesetup{protrusion=false}%
   \tableofcontents%  

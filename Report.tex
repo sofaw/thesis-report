@@ -35,24 +35,22 @@
 \addbibresource{references.bib}
 \author{Sophie Wood}
 \title{Model-driven software migration between microcontrollers}
-\date{Version 0.1, 2018-May-16}
+\date{Version 1.1, 2018-September-03}
 \supervisor{Simos Gerasimou}
 \SWE
-% TODO update wordcount
+
 \wordcount{0}
-
-% TODO update includes/excludes
-\includes{Appendices TODO}
-
-\excludes{TODO}
+\excludes{Appendices \ref{first_appendix} to \ref{last_appendix}}
 
 \abstract{Software becomes obsolete when it is no longer compatible with an updated system. For example, moving a system to a new hardware platform or using an alternative data format can obsolete the existing software. Business domains with long software life-cycles such as avionics/military and other ``safety-critical'' areas often face obsolescence problems as hardware parts are discontinued before the system is complete. This necessitates adaptation of the system to new components which obsoletes the software.
 Model-Driven Engineering (MDE) techniques use domain models to simplify software development and has been shown to work well in industry when applied to software migration projects.
 
 This project aims to tackle the particular software obsolescence problem of migrating software between hardware platforms - in this case the Parallax Propeller Activity Board and Arduino Uno microcontrollers. In particular, the project will utilise MDE to achieve this goal.}
 
-% TODO update acknowledgements
-\acknowledgements{TODO}
+\acknowledgements{I would like to thank Simos Gerasimou for his guidance and support throughout this project.}
+
+\statementofethics{This project did not use any human participants.}
+%TODO add statement of which appendices are marked
 
 %TODO add statement of ethics
 
@@ -1073,7 +1071,7 @@ If work is continued on the project, the first areas to address are the issues f
 \printbibliography
 
 \begin{appendices}
-\chapter{Fritzing Netlist Analysis Test Inputs}
+\chapter{Fritzing Netlist Analysis Test Inputs} \label{first_appendix}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Netlist}\label{lcd_netlist}]{graphics/LCD_netlist.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/One_Pin.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 2 Netlist}\label{one_pin_netlist}]{graphics/One_Pin.pdf}
@@ -1087,7 +1085,7 @@ If work is continued on the project, the first areas to address are the issues f
 \includepdf[pages=1,scale=0.75, pagecommand=\section{Test Case 1 Parallax Source Output}\label{parallax_tc1_out}]{graphics/parallax_test_case_1_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/parallax_test_case_1_out.pdf}
 
-\chapter{Case Studies Inputs/Outputs} \label{case_studies}
+\chapter{Case Studies Inputs/Outputs} \label{case_studies} \label{last_appendix}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Output}\label{cs1_out}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=2-,scale=0.75, pagecommand={}]{graphics/ir_humidity_sensors_out.pdf}
 \includepdf[pages=1,scale=0.75, pagecommand=\section{CS-1 Migrated Code}\label{cs1_migrated}]{graphics/ir_humidity_sensors_migrated.pdf}
