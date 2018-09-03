@@ -284,7 +284,6 @@ The key features of the Parallax Propeller Activity Board are \parencite{propell
 \end{itemize}
 
 \subsection{Arduino Uno}
-%TODO: figure out which version I will be using
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\linewidth]{graphics/arduino_board.jpg}
@@ -998,8 +997,19 @@ These tables show that the majority of requirements have been met. In particular
 \item The system does not clearly indicate errors that have occurred during its use (see Section \ref{cs3}).
 \end{itemize}
 
-\section{Limitations} \label{eval_limits}
-%TODO: complete limitations - internal, external, construct, conclusion validity
+\section{Validity} \label{eval_limits}
+This section discusses the validity of the evaluation in order to determine the reliability of the conclusions drawn from the testing/case studies performed. The analysis will consider the internal, external and construct validity in sections \ref{internal_validity} to \ref{construct_validity}.
+
+\subsection{Internal Validity} \label{internal_validity}
+Internal validity threats occur when the procedure used to obtain results introduces bias. The test cases were designed to limit bias by examining a range of scenarios of different complexity. For example, the Fritzing netlist analysis tests dealt with parts having different numbers of read/write pins and a more complex circuit with multiple sensors. A possible limitation to the internal validity is that only one test case was used to analyse the Parallax source code analysis component.  However, this test case was fairly complex and covered all of the cases for expected behaviour of this component discussed in Section \ref{pscatc}. Therefore, it was deemed unnecessary to perform further test cases. Similarly, there was only one case study where the full migration procedure was performed. However, this was again a fairly complex case and was therefore considered sufficient, particularly in combination with the testing performed of the individual components in Section \ref{test_cases}.
+
+\subsection{External Validity}
+External validity threats limit the generalisation of results, in this case, the application of this approach to different microprocessors. Firstly, the Parallax source code analysis component should be applicable to any source code written in C and can be adapted to work with C++ code by implementing mappings from the source to generated code for the additional constructs (e.g. classes). Similarly, the Fritzing netlist analysis component should work with other boards provided that Fritzing contains a component for this additional board and the config file is updated with this part. The Arduino libraries suggestion component should also be generalisable to other target platforms given an updated config file. However, some minor modifications may be required for the coordinating code generation EGL transform. For example, the generated code currently conforms to the Arduino code structure of \codeword{setup()} and \codeword{loop()} methods whereas most C code uses a \codeword{main()} method instead.
+
+To generalize the approach to platforms using languages other than C/C++ would require more extensive modification. This concern has been addressed by prioritising an easily modifiable architecture in the design stage (as discussed in Chapter \ref{design_and_impl}) and making use of the well-documented Epsilon MDE framework.
+
+\subsection{Construct Validity} \label{construct_validity}
+Construct validity threats can occur from assumptions and simplifications in the case studies. A potential threat is that the case studies did not migrate real-world applications. However, the case studies were designed to migrate functionality that is likely to appear in real-world applications. For example, CS-1 demonstrates environment sensing, movement and humidity/temperature sensing.
 
 \newgeometry{left=3cm,bottom=2cm, top=3cm, right=2.5cm, footskip=0.2cm}
 \begin{landscape}
