@@ -97,9 +97,17 @@ The main goal of the project is to demonstrate how MDE may be used to support mi
 \end{itemize}
 
 \section{Project Scope}
+The project is intended to support migration of software from a Parallax Propeller Activity Board to an Arduino Uno in order to demonstrate an approach to software migration that may be applicable to more platforms. The approach will support migration of code that has a functional equivalent on the target platform e.g. the system will not attempt to migrate code that uses the multi-core processor of the Parallax Propeller Activity board to the single-core Arduino Uno. The designed approach will be implemented as an Eclipse plugin that will take as input the code for a Parallax Propeller Activity board application and produces code that, when completed by a programmer, can be run on an Arduino Uno with the same functionality as the Parallax source code. The project will be evaluated by performing a case study of this migration process.
+
+The project was able to produce a system consisting of three main components: a Fritzing netlist analysis component, an Arduino libraries suggestion component and a Parallax source code analysis component. The Fritzing netlist analysis component is used to generate pin variables for the target platform given the configuration of the Arduino Uno's circuit. The Arduino libraries suggestion component is used to suggest possible replacement libraries for the Parallax libraries of the source code. Finally, the Parallax source code analysis component is used to identify the methods belonging to Parallax libraries and create corresponding empty methods (to be completed by developers) in the generated code.  
+
+The project was evaluated by a combination of test cases, to ensure the individual components work as expected, and case studies to validate that the requirements outlined in Chapter \ref{reqs} were met. The evaluation demonstrated that the majority of the requirements were met and the main components worked as expected. In particular, an application involving the use of servos, infrared LEDs/sensors and a humidity/temperature sensor was able to be migrated to the Arduino Uno. However, further work needs to be done to improve handling errors of the system and migrating additional constructs (such as macro definitions) from the source to target platform. 
+
 \begin{itemize}
-\item The system will only support the migration of software from a Parallax Propeller Activity Board to an Arduino Uno.
-\item The system will be considered successful if it is shown to work for a case study of reasonable complexity. Due to the time constraints of the project, it is not expected that the system will work for all cases.
+
+\item The approach will be considered successful if it is shown to work for a case study of reasonable complexity. Due to the time constraints of the project, it is not expected that the system will work for all cases.
+
+\item  
 \end{itemize}
 
 \section{Report Structure}
@@ -1124,7 +1132,7 @@ This project aimed to build on existing research in dealing with the software ob
 
 In the course of the project, three main components were developed. Firstly, a Fritzing netlist analysis component enabled a diagram of the circuit for the target platform to be supplied in order to calculate pin variables for the generated code. This component simplifies the migration process when the source and target platforms have functionally equivalent circuits using different pin configurations. Secondly, an Arduino library analysis component was produced in order to process the target platform libraries and suggest suitable replacements for the source platform libraries. This component helps simplify the manual procedure of mapping between libraries which is a particularly difficult task to automate. Finally, a Parallax source code analysis component enables the source platform dependent functions to be identified so that these can be replaced with empty method stubs in the generated code. This reduces the difficulty in mapping between source and target platform methods. From these components, a C file is generated that, with some manual modifications, is compatible with the target platform.
 
-Based on the evaluation of the system performed in Chapter \ref{eval_chapt}, the system was successful in supporting migration between the Parallax and Arduino platforms for a case study of reasonable complexity. Furthermore, the project has been designed in such a way that the individual components of the system can easily be modified/reused in supporting migration between different platforms as discussed in Chapter \ref{design_and_impl}.
+Based on the evaluation of the system performed in Chapter \ref{eval_chapt}, the system was successful in supporting migration between the Parallax and Arduino platforms for a case study of reasonable complexity. Furthermore, the project has been designed in such a way that the individual components of the system can easily be modified/reused in supporting migration between different platforms as discussed in Chapter \ref{design_and_impl}. The source code for the project can be found at https://github.com/sofaw/thesis-code/tree/master/SoftwareMigrator.
 
 \section{Further Work}
 If work is continued on the project, the first areas to address are the issues found during the evaluation as summarised in Section\ref{current_issues}. Once these issues have been tackled the following avenues could be investigated for improving the functionality of the system:
