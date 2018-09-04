@@ -39,7 +39,7 @@
 \supervisor{Simos Gerasimou}
 \SWE
 
-\wordcount{14788}
+\wordcount{16478}
 \excludes{the appendices}
 
 \abstract{Software becomes obsolete when it is no longer compatible with an updated system. For example, moving a system to a new hardware platform or using an alternative data format can obsolete the existing software. Business domains with long software life-cycles such as avionics/military and other ``safety-critical'' areas often face obsolescence problems as hardware parts are discontinued before the system is complete. This necessitates adaptation of the system to new components which obsoletes the software.
@@ -102,13 +102,6 @@ The project is intended to support migration of software from a Parallax Propell
 The project was able to produce a system consisting of three main components: a Fritzing netlist analysis component, an Arduino libraries suggestion component and a Parallax source code analysis component. The Fritzing netlist analysis component is used to generate pin variables for the target platform given the configuration of the Arduino Uno's circuit. The Arduino libraries suggestion component is used to suggest possible replacement libraries for the Parallax libraries of the source code. Finally, the Parallax source code analysis component is used to identify the methods belonging to Parallax libraries and create corresponding empty methods (to be completed by developers) in the generated code.  
 
 The project was evaluated by a combination of test cases, to ensure the individual components work as expected, and case studies to validate that the requirements outlined in Chapter \ref{reqs} were met. The evaluation demonstrated that the majority of the requirements were met and the main components worked as expected. In particular, an application involving the use of servos, infrared LEDs/sensors and a humidity/temperature sensor was able to be migrated to the Arduino Uno. However, further work needs to be done to improve handling errors of the system and migrating additional constructs (such as macro definitions) from the source to target platform. 
-
-\begin{itemize}
-
-\item The approach will be considered successful if it is shown to work for a case study of reasonable complexity. Due to the time constraints of the project, it is not expected that the system will work for all cases.
-
-\item  
-\end{itemize}
 
 \section{Report Structure}
 The project report begins with an overview of MDE techniques and the existing research into software obsolescence solutions in Chapter \ref{lit_review}. This chapter also contains an introduction to the approach used to tackle software obsolescence in this project as well as an overview of the platforms for which the system will aid in software migration. This is followed by
