@@ -260,10 +260,19 @@ Epsilon has been chosen as the framework for this project over others for the fo
 \item I am already familiar with how to use the framework.
 \end{itemize}
 
-\section{Microcontroller Background} \label{mc_bg}
-The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno. However, since some features of the boards are different, this must be taken into account when migrating code. For example, the Propeller Activity Board has 16 digital pins whereas the Arduino Uno only has 14. In this case, code may need to be adapted to use different pins on the Arduino if it is migrated from the Propeller Activity Board. The following section highlights the important features and differences between the two boards as well as an overview of the board layout.
+\section{Microcontroller Background} \label{mc_bg}Microprocessors consist of one or more CPUs, memory and input/output peripherals on an integrated circuit (IC). They are primarily used in embedded systems such as automobiles or medical equipment but are also used by hobbyists due to their low cost. Microcontrollers are popular since they can reduce the size of circuits by replacing multiple other ICs and increase flexibility as they can be reprogrammed \parencite{bbcmicrocontrollers}.
 
-\subsection{Parallax Propeller Activity Board}
+The project involves migration of code from a Parallax Propeller Activity Board to an Arduino Uno in order to demonstrate an approach to migrating software between platforms. These microcontrollers were chosen as they are popular and their use is well-documented. The key features of these microcontollers are highlighted and an overview of the board layout is provided in sections \ref{parallax_specs} and \ref{arduino_specs} below. The main differences that will need to be taken into account for software migration are:
+\begin{itemize}
+\item The Parallax Propeller Activity Board has a multi-core microcontroller whereas the Arduino Uno uses a single core microcontroller.
+\item The Parallax Propeller Activity Board only supports C whereas the Arduino Uno supports C and C++.
+\item The two boards have different numbers of digital/analog pins.
+\item The boards have different sized memories.
+\end{itemize}
+
+Code migration is a challenge as microcontroller architectures can vary widely. Different functions and libraries will be used depending on the specific architecture and so code cannot just be copy-pasted to the new platform even if it uses the same language. Instead functions from source platform libraries must be replaced with those from target platform libraries. Furthermore, the two platforms may demonstrate different hardware capabilities (e.g. single vs. multi-core processors or different sizes of memory). This also must be taken into account during migration.
+
+\subsection{Parallax Propeller Activity Board} \label{parallax_specs}
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.6\linewidth]{graphics/propeller_board.png}
@@ -281,7 +290,7 @@ The key features of the Parallax Propeller Activity Board are \parencite{propell
 \item 2 Digital-to-Analog pins
 \end{itemize}
 
-\subsection{Arduino Uno}
+\subsection{Arduino Uno} \label{arduino_specs}
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\linewidth]{graphics/arduino_board.jpg}
