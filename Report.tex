@@ -308,6 +308,26 @@ The key features of the Arduino Uno are \parencite{arduinospec}:
 \item 6 analog input pins
 \end{itemize}
 
+\pagebreak
+\section{Fritzing}
+Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. 
+
+ \begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.6\linewidth]{graphics/fritzing_graphic.png}
+  \captionof{figure}{An example Fritzing diagram.}
+  \label{fig:fritz_graph}
+\end{figure}
+
+To handle differences in pin configurations between the source and target platforms as discussed in Section \ref{mc_bg} a Fritzing netlist of the target board can be analysed in order to deduce the pin variables required in the migrated code (this is discussed in more detail in Section \ref{fritz_design}).
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{graphics/fritzing_netlist.png}
+  \captionof{figure}{Part of the netlist generated for Figure \ref{fig:fritz_graph}.}
+  \label{fig:fritz_net}
+\end{figure}
+
 \chapter{Methodology} \label{meth_chapt}
 This section summarises the methodology and tools used for managing this project. It begins with an overview of project management methodologies in Section \ref{overview_meth} and discusses the methodology chosen for this particular project in Section \ref{choice_meth}. Finally, the tools used for project management are discussed in Section \ref{proj_mgmt}.
 
@@ -478,21 +498,7 @@ This chapter of the report discusses the decisions made in designing and impleme
 \subsection{Overview}
 Figure \ref{fig:high_level_overview} shows the high-level architecture of the approach. There are three main components to the approach: Fritzing netlist analysis, Arduino libraries analysis and Parallax source code analysis. Each of these components produces information that contributes to code generation. The code generation is coordinated by an EGL transformation that takes the data from these components and generates a C file as output. This file acts as a basis for code that is compatible with the target platform. 
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.6\linewidth]{graphics/fritzing_graphic.png}
-  \captionof{figure}{An example Fritzing diagram.}
-  \label{fig:fritz_graph}
-\end{figure}
-
-Fritzing\footnote{http://fritzing.org/home/} is open-source software that (among other uses) enables the user to create circuit diagrams and export a netlist\footnote{An XML file encapsulating all the parts and connections in the circuit}. Figures \ref{fig:fritz_graph} and \ref{fig:fritz_net} show a Fritzing diagram and part of a netlist for that diagram. The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a configuration file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transformation script and is used to generate pin variables in the output file.
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\linewidth]{graphics/fritzing_netlist.png}
-  \captionof{figure}{Part of the netlist generated for Figure \ref{fig:fritz_graph}.}
-  \label{fig:fritz_net}
-\end{figure}
+The goal of the Fritzing netlist analysis component is to make it simpler to handle cases where the source and target platform have different pin configurations for a functionally equivalent circuit. For example, an LED may be attached to pin 12 on the source board and pin 6 on the target. Manually changing the references to this pin number can be error prone. Given a Fritzing netlist and a configuration file (containing additional information about Fritzing parts) this component calculates which pin of the board each part is connected to. This information is passed to the Code Generation EGL transformation script and is used to generate pin variables in the output file.
 
 The goal of the Arduino libraries analysis component is to aid in mapping between source and target platform libraries. This is acheived by suggesting to the user suitable target platform libraries for the parts in the Fritzing netlist. Analysis is performed based on these parts and the Arduino header files to propose suitable libraries. Additionally, chosen libraries are recorded in the configuration file and this is used to inform the suggestions when the system is run subsequently. The libraries chosen by the user are passed to the Code Generation EGL transformation script and used to add suitable include statements to the output file.
 
@@ -689,7 +695,23 @@ The methods defined in Parallax libraries are identified as follows. The Paralla
 Once all the nodes have been processed, there will be a list of all the declarations/definitions of methods that must be replaced in the output code. These are passed to the Code Generation EGL transform to create empty method stubs. Any other code is passed as is to the Code Generation EGL transform.
 
 \section{Supporting Migration Between Other Platforms} \label{how_to_modify}
-%TODO
+This section proposes how the approach developed for migrating between a Parallax Propeller Activity board and an Arduino Uno may be modified to support migration between other platforms.
+
+Firstly, to migrate between other platforms using C/C++ the following changes would need to be made:
+\begin{itemize}
+\item The configuration file would need to be updated with entries for the additional platforms so that the correct type information is available to the Fritzing netlist analysis component.
+\item The Fritzing netlist analysis component may need to be updated depending on how the pins are labelled in the netlist of the new target platform. Currently, the component implements logic to ignore, for example, the pins labelled \codeword{GND/5V} (as pin variables are only generated for digital/analog pins, not power/ground) but other boards may label these pins differently in Fritzing.
+\item The code generation EGL transformation will need to be adapted as currently \codeword{setup()} and \codeword{loop()} methods are generated to be compatible with the Arduino Uno rather than the more usual \codeword{main()} method.
+\end{itemize}
+
+The Arduino library suggestion component should not require any changes provided the target platform uses C/C++ and the configuration file contains entries for all the parts in the Fritzing netlist. Additionally, the Parallax source code analysis component should be applicable to  source code written in C and can be adapted to work with C++ code by implementing mappings from the source to generated code for the additional constructs (e.g. classes).
+
+The following further changes would be required if the platforms use a language other than C/C++:
+\begin{itemize}
+\item The Parallax source analysis component would require the most modification as the use of the Eclipse CDT project parser would need to be replaced with a parser for the new source language. The ParallaxDependencyResolver class and Parallax queries EOL script would then require major modifications to process the output of the new parser.
+\item The Arduino library suggestion component would need to be modified to process the format of the libraries for the target platform (currently, the component searches for \codeword{.h} files within a provided root directory for the libraries).
+\item The code generation EGL transformation script would need to be updated to generate code in the format of the new target language.
+\end{itemize}
 
 \section{Current Issues} \label{limits_to_des}
 This project is intended to be a proof-of-concept rather than a complete implementation. As such, there are a few issues in the approach which are discussed below.
